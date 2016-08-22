@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/assets">
+        <file>Arrows.svg</file>
+        <file>Browser.svg</file>
+        <file>Connected-Home.svg</file>
+        <file>FM-Radio.svg</file>
+        <file>Genivi_Logo-blk.svg</file>
+        <file>Genivi_Logo-white.svg</file>
+        <file>Homepage-Background.png</file>
+        <file>HVAC-Climate.svg</file>
+        <file>Media.svg</file>
+        <file>Orange-Lines-and-Spheres.svg</file>
+        <file>RVI.svg</file>
+        <file>Homepage-Background-with-lines-high-comp.jpg</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file>AppTray.qml</file>
+        <file>AppTrayModelView.qml</file>
+        <file>Colors.qml</file>
+        <file>DateBackend.qml</file>
+        <file>GeniviLogo.qml</file>
+        <file>Home.qml</file>
+        <file>HomeApps.qml</file>
+        <file>HomeNavigationButton.qml</file>
+        <file>main.qml</file>
+        <file>Sidebar.qml</file>
+        <file>TrayButton.qml</file>
+        <file>AppTrayItem.qml</file>
+        <file>AppTrayModel.qml</file>
+    </qresource>
+</RCC>
