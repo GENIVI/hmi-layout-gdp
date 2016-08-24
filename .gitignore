@@ -1,1 +1,14 @@
+*.swp
 *.pro.user
+moc_*
+*.o
+*.dylib
+*.moc
+*.stash
+*.a
+Makefile*
+*.autosave
+*.so
+*.dll
+qrc*.cpp
+genivi-11-hmi
