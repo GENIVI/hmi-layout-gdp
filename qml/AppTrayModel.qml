@@ -28,7 +28,7 @@ ListModel {
                 }
                 ListElement {
                     appIcon: "qrc:/assets/RVI.svg"
-                    appName: "RVI"
+                    appName: "Remote Vehicle Interaction"
                     appId: "com.jlr.rvi"
                 }
                 ListElement {
