@@ -32,6 +32,7 @@ Item {
         Image {
             id: trayItemImage
             anchors.centerIn: parent
+            anchors.verticalCenterOffset: parent.height * -0.05
             sourceSize.width: parent.width * 0.4
             sourceSize.height: parent.height * 0.4
             fillMode: Image.PreserveAspectFit
@@ -43,13 +44,19 @@ Item {
             id: trayItemName
             width: parent.width
             height: parent.height * 0.125
+            anchors.top: trayItemImage.bottom
+            anchors.topMargin: parent.height * 0.05
             anchors.bottom: parent.bottom
             anchors.bottomMargin: parent.height * 0.085
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: parent.width * 0.05
+            anchors.right: parent.right
+            anchors.rightMargin: parent.width * 0.05
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
-            font.pixelSize: parent.height * 0.135
+            font.pixelSize: parent.height * 0.12
             font.family: "Helvetica"
+            wrapMode: Text.Wrap
             color: "white"
             text: model.appName
         }
