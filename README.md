@@ -10,6 +10,7 @@ Running
 -----------
 * Open Qt Creator
 * Open Project and select genivi-11-hmi.pro from the top level of the repository
+* On the first run Qt Creator will ask you to configure your project.  The default proposal will be a Desktop configuration using already installed compilers, so you should probably be able to just hit "OK".
 * Press the green Play button
 
 Usage
