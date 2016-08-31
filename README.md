@@ -5,6 +5,7 @@ Prerequisities
 ---------------
 General:
 * Qt 5.6+ with QtQuick
+* Plugins built
 
 Running
 -----------
