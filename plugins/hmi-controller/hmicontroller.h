@@ -1,16 +1,28 @@
 #ifndef HMICONTROLLER_H
 #define HMICONTROLLER_H
 
-#include <QQuickItem>
+#include <QObject>
 
-class HMIController : public QQuickItem
+class HMIController : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(HMIController)
 
 public:
-    HMIController(QQuickItem *parent = 0);
+    HMIController(QObject *parent = 0);
     ~HMIController();
+
+    enum FeatureAreaState {
+        SystemHome,
+        ApplicationReady,
+        ClosingApplication,
+        OpeningApplication
+    };
+    Q_ENUM(FeatureAreaState)
+
+
+private:
+
 };
 
 #endif // HMICONTROLLER_H
