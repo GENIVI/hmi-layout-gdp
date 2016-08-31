@@ -13,5 +13,6 @@
         <file>TrayButton.qml</file>
         <file>AppTrayItem.qml</file>
         <file>AppTrayModel.qml</file>
+        <file>FeatureArea.qml</file>
     </qresource>
 </RCC>
