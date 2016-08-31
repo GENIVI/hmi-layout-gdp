@@ -1,7 +1,7 @@
 #ifndef APPLICATIONMODEL_H
 #define APPLICATIONMODEL_H
 
-#include <QQuickItem>
+#include <QObject>
 #include <QAbstractItemModel>
 
 class ApplicationModel : public QObject
