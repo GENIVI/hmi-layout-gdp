@@ -60,7 +60,7 @@ Item {
         height: bgItemHeight
         anchors.centerIn: parent
 
-        Item {
+        FeatureArea {
             id: featureArea
             height: bgItemHeight
             width: bgItemWidth - appTrayObject.sideBarWidth

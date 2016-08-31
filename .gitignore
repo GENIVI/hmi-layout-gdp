@@ -11,4 +11,3 @@ Makefile*
 *.so
 *.dll
 qrc*.cpp
-genivi-11-hmi

@@ -29,11 +29,9 @@ Item {
             switch (appTrayInterface.state)
             {
             case "HOME":
-                console.log("Opening Tray");
                 appTrayInterface.state = "OPEN";
                 break;
             case "OPEN":
-                console.log("Going Home");
                 appTrayInterface.state = "HOME";
                 break;
             default:
