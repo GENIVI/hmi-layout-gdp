@@ -35,6 +35,9 @@ Rectangle {
         function newYValue() {
             return Math.random() * (maxHeight * 0.35);
         }
+        function newInterval() {
+            return (1250 + Math.random() * (1600 - 1250));
+        }
 
         Image {
             id: homeAppIcon
@@ -47,13 +50,14 @@ Rectangle {
 
         Timer {
             id: floatTimer
-            interval: 1500
+            interval: homeAppObject.newInterval();
             repeat: true
             running: true
             triggeredOnStart: true
             onTriggered: {
                 homeAppObject.x = homeAppObject.newXValue();
                 homeAppObject.y = homeAppObject.newYValue();
+                floatTimer.interval = homeAppObject.newInterval();
             }
         }
         ColorOverlay {
@@ -67,6 +71,7 @@ Rectangle {
             cached: false
             opacity: 0
 
+            /* Interaction behavior */
             Behavior on width {
                 NumberAnimation {
                     duration: 150
@@ -77,18 +82,10 @@ Rectangle {
                     duration: 150
                 }
             }
+            /* End interaction */
         }
 
-        Behavior on x {
-            NumberAnimation {
-                duration: 1500
-            }
-        }
-        Behavior on y {
-            NumberAnimation {
-                duration: 1500
-            }
-        }
+        /* Interaction behavior */
         Behavior on color {
             ColorAnimation {
                 duration: 150
@@ -99,6 +96,20 @@ Rectangle {
                 duration: 150
             }
         }
+        /* End interaction */
+
+        /* Float behavior */
+        Behavior on x {
+            NumberAnimation {
+                duration: 1500
+            }
+        }
+        Behavior on y {
+            NumberAnimation {
+                duration: 1500
+            }
+        }
+        /* End float */
     }
 
     RectangularGlow {
@@ -115,7 +126,6 @@ Rectangle {
     }
 
     MouseArea {
-        id: mouseArea
         anchors.fill: parent
 
         /* Could possibly change this to run an animation on */
@@ -164,7 +174,6 @@ Rectangle {
                 visible: true
             }
         }
-
     ]
 }
 

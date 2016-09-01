@@ -8,6 +8,9 @@ Item {
     readonly property int surfaceCenterX: surfaceWidth / 2
     readonly property int surfaceCenterY: surfaceHeight / 2
 
+    /* Propogation signal to interface with wider system */
+    signal openApplication(string name, url icon, string id)
+
     /* Need to convert to C++ class to manage data interface */
     QtObject {
         id: modelPrivates
@@ -54,6 +57,8 @@ Item {
         sourceIcon: modelPrivates.fmRadioIcon
         appName: modelPrivates.fmRadioName
         appId: modelPrivates.fmRadioId
+
+        onOpenApplication: homeAppsInterface.openApplication(name, icon, id)
     }
     HomeNavigationButton {
         id: app2
@@ -63,6 +68,8 @@ Item {
         sourceIcon: modelPrivates.connectedHomeIcon
         appName: modelPrivates.connectedHomeName
         appId: modelPrivates.connectedHomeId
+
+        onOpenApplication: homeAppsInterface.openApplication(name, icon, id)
     }
     HomeNavigationButton {
         id: app3
@@ -72,6 +79,8 @@ Item {
         sourceIcon: modelPrivates.hvacClimateIcon
         appName: modelPrivates.hvacClimateName
         appId: modelPrivates.hvacClimateId
+
+        onOpenApplication: homeAppsInterface.openApplication(name, icon, id)
     }
     HomeNavigationButton {
         id: app4
@@ -81,6 +90,8 @@ Item {
         sourceIcon: modelPrivates.mediaManagerIcon
         appName: modelPrivates.mediaManagerName
         appId: modelPrivates.mediaManagerId
+
+        onOpenApplication: homeAppsInterface.openApplication(name, icon, id)
     }
     HomeNavigationButton {
         id: app5
@@ -90,6 +101,8 @@ Item {
         sourceIcon: modelPrivates.browserIcon
         appName: modelPrivates.browserName
         appId: modelPrivates.browserId
+
+        onOpenApplication: homeAppsInterface.openApplication(name, icon, id)
     }
     HomeNavigationButton {
         id: app6
@@ -99,5 +112,7 @@ Item {
         sourceIcon: modelPrivates.rviIcon
         appName: modelPrivates.rviName
         appId: modelPrivates.rviId
+
+        onOpenApplication: homeAppsInterface.openApplication(name, icon, id)
     }
 }

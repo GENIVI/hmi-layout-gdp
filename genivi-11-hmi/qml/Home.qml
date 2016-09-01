@@ -69,13 +69,16 @@ Item {
             visible: false
         }
 
-
         HomeApps {
             id: homeApps
             height: bgItemHeight
             width: bgItemWidth
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
+
+            onOpenApplication: {
+                console.log("STUB OUTPUT: home-nav apps open application handler");
+            }
         }
 
         AppTray {
@@ -84,6 +87,14 @@ Item {
             width: bgItemWidth
             anchors.right: parent.left
             anchors.verticalCenter: parent.verticalCenter
+
+            onOpenApplication: {
+                console.log("STUB OUTPUT: apptray open application handler");
+            }
+
+            onGoHome: {
+                console.log("STUB OUTPUT: apptray go home handler");
+            }
         }
     }
 }

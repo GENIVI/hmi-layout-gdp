@@ -6,6 +6,14 @@ Item {
 
     readonly property int borderWidth: width * 0.0075
 
+    property string appName: model.appName
+    property url sourceIcon: model.appIcon
+    property string appId: model.appId
+
+    state: "DEFAULT"
+
+    signal openApplication(string name, url icon, string id)
+
     Rectangle {
         id: fullOpacityBorder
         width: parent.width * 0.95
@@ -23,6 +31,19 @@ Item {
             opacity: 0.5
             color: colors.primaryOrange
         }
+
+        /* Interaction behavior */
+        Behavior on width {
+            NumberAnimation {
+                duration: 150
+            }
+        }
+        Behavior on height {
+            NumberAnimation {
+                duration: 150
+            }
+        }
+        /* End interaction */
     }
     Item {
         id: contentContainer
@@ -36,7 +57,7 @@ Item {
             sourceSize.width: parent.width * 0.4
             sourceSize.height: parent.height * 0.4
             fillMode: Image.PreserveAspectFit
-            source: model.appIcon
+            source: sourceIcon
             smooth: true
         }
 
@@ -58,8 +79,44 @@ Item {
             font.family: "Helvetica"
             wrapMode: Text.Wrap
             color: "white"
-            text: model.appName
+            text: appName
         }
     }
+    MouseArea {
+        id: mouse
+        anchors.fill: parent
+
+        /* TODO: Figure out how to deal with touch-based scrolling   */
+        /* when touch lands inside a button but isnt intended to be  */
+        /* pressed. Perhaps using a single point MultiTouchPointArea */
+        /* could provide a more responsive reaction to leaving the   */
+        /* touch area before releasing.                              */
+        onPressed: {
+            appTrayItemInterface.state = "PRESSED";
+        }
+        onReleased: {
+            appTrayItemInterface.state = "DEFAULT";
+            openApplication(appName, sourceIcon, appId);
+        }
+    }
+
+    states: [
+        State {
+            name: "DEFAULT"
+            PropertyChanges {
+                target: fullOpacityBorder
+                width: parent.width * 0.95
+                height: parent.height * 0.95
+            }
+        },
+        State {
+            name: "PRESSED"
+            PropertyChanges {
+                target: fullOpacityBorder
+                width: parent.width * 0.9
+                height: parent.height * 0.9
+            }
+        }
+    ]
 }
 
