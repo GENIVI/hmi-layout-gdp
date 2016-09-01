@@ -7,7 +7,7 @@ Item {
         id: trayBackDrop
         anchors.fill: parent
         color: colors.lightGray
-        opacity: 0.5
+        opacity: 0.65
     }
     AppTrayModel { id: tempModel }
     GridView {

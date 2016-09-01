@@ -69,13 +69,16 @@ Item {
             visible: false
         }
 
-
         HomeApps {
             id: homeApps
             height: bgItemHeight
             width: bgItemWidth
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
+
+            onOpenApplication: {
+
+            }
         }
 
         AppTray {
