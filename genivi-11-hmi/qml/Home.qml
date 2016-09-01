@@ -77,7 +77,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
 
             onOpenApplication: {
-
+                console.log("STUB OUTPUT: home-nav apps open application handler");
             }
         }
 
@@ -87,6 +87,14 @@ Item {
             width: bgItemWidth
             anchors.right: parent.left
             anchors.verticalCenter: parent.verticalCenter
+
+            onOpenApplication: {
+                console.log("STUB OUTPUT: apptray open application handler");
+            }
+
+            onGoHome: {
+                console.log("STUB OUTPUT: apptray go home handler");
+            }
         }
     }
 }

@@ -8,6 +8,11 @@ Item {
     /* Synchronizing property for AppTray animations  */
     readonly property int appTrayAnimationDuration: 750
 
+    /* Propogation signal to interface with wider system */
+    signal openApplication(string name, url icon, string id)
+
+    signal goHome()
+
     state: "HOME"
 
     Sidebar {
@@ -52,6 +57,8 @@ Item {
             width: parent.width
             height: parent.height
             anchors.centerIn: parent
+
+            onOpenApplication: appTrayInterface.openApplication(name, icon, id)
         }
     }
 
@@ -62,7 +69,6 @@ Item {
             sidebar.closeAppTray();
             break;
         case "OPEN":
-            console.log(appTrayInterface.width);
             sidebar.openAppTray();
             break;
         default:
@@ -113,6 +119,9 @@ Item {
                 target: appTrayInterface
                 property: "x"
                 duration: appTrayAnimationDuration
+            }
+            ScriptAction {
+                script: appTrayInterface.goHome()
             }
         }
     ]

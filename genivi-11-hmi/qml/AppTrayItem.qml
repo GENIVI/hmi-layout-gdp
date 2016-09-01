@@ -6,9 +6,9 @@ Item {
 
     readonly property int borderWidth: width * 0.0075
 
-    property string appName
-    property url sourceIcon
-    property string appId
+    property string appName: model.appName
+    property url sourceIcon: model.appIcon
+    property string appId: model.appId
 
     state: "DEFAULT"
 
@@ -57,7 +57,7 @@ Item {
             sourceSize.width: parent.width * 0.4
             sourceSize.height: parent.height * 0.4
             fillMode: Image.PreserveAspectFit
-            source: model.appIcon
+            source: sourceIcon
             smooth: true
         }
 
@@ -79,7 +79,7 @@ Item {
             font.family: "Helvetica"
             wrapMode: Text.Wrap
             color: "white"
-            text: model.appName
+            text: appName
         }
     }
     MouseArea {
@@ -95,7 +95,6 @@ Item {
             appTrayItemInterface.state = "PRESSED";
         }
         onReleased: {
-            console.log("opened");
             appTrayItemInterface.state = "DEFAULT";
             openApplication(appName, sourceIcon, appId);
         }
