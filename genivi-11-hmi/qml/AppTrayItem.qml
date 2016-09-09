@@ -108,6 +108,10 @@ Item {
                 width: parent.width * 0.95
                 height: parent.height * 0.95
             }
+            PropertyChanges {
+                target: trayItemName
+                font.pixelSize: contentContainer.height * 0.12
+            }
         },
         State {
             name: "PRESSED"
@@ -115,6 +119,10 @@ Item {
                 target: fullOpacityBorder
                 width: parent.width * 0.9
                 height: parent.height * 0.9
+            }
+            PropertyChanges {
+                target: trayItemName
+                font.pixelSize: contentContainer.height * 0.10
             }
         }
     ]

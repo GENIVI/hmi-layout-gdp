@@ -5,7 +5,7 @@ Prerequisities
 ---------------
 General:
 * Qt 5.6+ with QtQuick
-* Plugins built
+* Plugins built (and installed)
 
 Running
 -----------
@@ -18,4 +18,17 @@ Running
 Usage
 -----------
 * Press Spacebar to toggle between fullscreen and resizable displays
+
+Plugins
+-----------
+* Plugins are required to be built and installed to the appropriate Qt locations, this is mostly automatic
+* This can be dealt with two ways
+    1) Terminal to top level of gdp-hmi project and run the equivalent of ```qmake && make && make install```
+    2) In the Qt Project configuration, add an extra make step for install
+* Shadow building uses a local directory as a deployment spoof, however, plugins will not install to the proper Qt directories if built with shadow build.
+
+TroubleShooting
+---------------
+* If you get something like: ```com.jlr.hmicontroller``` not defined.
+    *) That means your plugins are not setup just yet.
 
