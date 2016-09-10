@@ -5,7 +5,7 @@
 
 void ApplicationModelPlugin::registerTypes(const char *uri)
 {
-    // @uri com.jlr.applicationmodel
+    // @uri com.genivi.applicationmodel
     qmlRegisterType<ApplicationModel>(uri, 1, 0, "ApplicationModel");
 }
 

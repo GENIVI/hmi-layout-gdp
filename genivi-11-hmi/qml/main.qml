@@ -6,7 +6,6 @@ Window {
     visible: true
     width: Screen.width * 0.7
     height: Screen.height * 0.675
-    title: qsTr("Hello World")
 
     property bool fullScreen: false
 

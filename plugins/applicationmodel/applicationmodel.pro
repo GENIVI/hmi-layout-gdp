@@ -4,7 +4,7 @@ QT += qml quick
 CONFIG += qt plugin c++11
 
 TARGET = $$qtLibraryTarget($$TARGET)
-uri = com.jlr.applicationmodel
+uri = com.genivi.applicationmodel
 
 # Input
 SOURCES += \

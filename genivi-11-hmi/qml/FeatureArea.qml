@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import com.jlr.hmicontroller 1.0
+import com.genivi.hmicontroller 1.0
 
 Item {
     id: featureAreaInterface

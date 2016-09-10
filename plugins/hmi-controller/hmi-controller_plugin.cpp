@@ -5,7 +5,7 @@
 
 void Hmi_ControllerPlugin::registerTypes(const char *uri)
 {
-    // @uri com.jlr.hmicontroller
+    // @uri com.genivi.hmicontroller
     qmlRegisterType<HMIController>(uri, 1, 0, "HMIController");
 }
 
