@@ -8,11 +8,14 @@
         <file>Home.qml</file>
         <file>HomeApps.qml</file>
         <file>HomeNavigationButton.qml</file>
-        <file>main.qml</file>
         <file>Sidebar.qml</file>
         <file>TrayButton.qml</file>
         <file>AppTrayItem.qml</file>
         <file>AppTrayModel.qml</file>
         <file>FeatureArea.qml</file>
+        <file>wayland-background.qml</file>
+        <file>DesktopMain.qml</file>
+        <file>DeviceMain.qml</file>
+        <file>HomeApplicationsModel.qml</file>
     </qresource>
 </RCC>

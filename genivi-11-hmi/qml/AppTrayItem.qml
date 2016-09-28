@@ -85,24 +85,13 @@ Item {
     MouseArea {
         id: mouse
         anchors.fill: parent
-
-        /* TODO: Figure out how to deal with touch-based scrolling   */
-        /* when touch lands inside a button but isnt intended to be  */
-        /* pressed. Perhaps using a single point MultiTouchPointArea */
-        /* could provide a more responsive reaction to leaving the   */
-        /* touch area before releasing.                              */
-        onPressed: {
-            appTrayItemInterface.state = "PRESSED";
-        }
-        onReleased: {
-            appTrayItemInterface.state = "DEFAULT";
-            openApplication(appName, sourceIcon, appId);
-        }
+        onClicked: openApplication(appName, sourceIcon, appId)
     }
 
     states: [
         State {
             name: "DEFAULT"
+            when: !(mouse.pressed)
             PropertyChanges {
                 target: fullOpacityBorder
                 width: parent.width * 0.95
@@ -115,6 +104,7 @@ Item {
         },
         State {
             name: "PRESSED"
+            when: mouse.pressed
             PropertyChanges {
                 target: fullOpacityBorder
                 width: parent.width * 0.9

@@ -2,6 +2,7 @@ import QtQuick 2.0
 
 Item {
     id: homeAppsInterface
+    property alias applicationsModel: applicationButtons.model
 
     readonly property int surfaceHeight: homeAppsInterface.height
     readonly property int surfaceWidth: homeAppsInterface.width
@@ -11,108 +12,44 @@ Item {
     /* Propogation signal to interface with wider system */
     signal openApplication(string name, url icon, string id)
 
-    /* Need to convert to C++ class to manage data interface */
-    QtObject {
-        id: modelPrivates
+    property var offsetXFactors: [
+        -0.3047, -0.15, -0.0365, -0.0052, 0.1432, 0.2359
+    ]
 
-        /* Icon source strings for early demo model     */
-        readonly property url fmRadioIcon: "qrc:/assets/FM-Radio.svg"
-        readonly property url connectedHomeIcon: "qrc:/assets/Connected-Home.svg"
-        readonly property url hvacClimateIcon: "qrc:/assets/HVAC-Climate.svg"
-        readonly property url mediaManagerIcon: "qrc:/assets/Media.svg"
-        readonly property url browserIcon: "qrc:/assets/Browser.svg"
-        readonly property url rviIcon: "qrc:/assets/RVI.svg"
+    property var offsetYFactors: [
+        0.037, -0.2657, -0.0611, 0.2917, -0.2231, 0.0213
+    ]
 
-        /* Application name strings for early demo model */
-        readonly property string fmRadioName: "FM Radio"
-        readonly property string connectedHomeName: "Connected Home"
-        readonly property string hvacClimateName: "HVAC"
-        readonly property string mediaManagerName: "Media Manager"
-        readonly property string browserName: "Browser"
-        readonly property string rviName: "RVI"
-
-        /* Application id strings for loading qml objects */
-        /* to simulate multi-process behavior             */
-        readonly property string fmRadioId: "com.jlr.fmradio"
-        readonly property string connectedHomeId: "com.jlr.connectedhome"
-        readonly property string hvacClimateId: "com.jlr.hvac"
-        readonly property string mediaManagerId: "com.jlr.media"
-        readonly property string browserId: "com.jlr.browser"
-        readonly property string rviId: "com.jlr.rvi"
+    // For system applications we can give them launcher specific icons
+    // Non-system applications will use thier specified icon
+    // TODO these are the same as the apps tray. Combine these
+    property var overrideIcons : {
+        "com.jlr.fmradio": "qrc:/assets/FM-Radio.svg",
+        "com.jlr.connectedhome": "qrc:/assets/Connected-Home.svg",
+        "com.jlr.hvac": "qrc:/assets/HVAC-Climate.svg",
+        "com.jlr.media": "qrc:/assets/Media.svg",
+        "com.jlr.browser": "qrc:/assets/Browser.svg",
+        "com.jlr.rvi": "qrc:/assets/RVI.svg",
     }
 
-    /* Hand anchoring and manually instantiating over using some */
-    /* model/view due to the specific placement of the objects.  */
-    /* Defining a PathView using a model of these objects seems  */
-    /* to be logical, however, implementation will require some  */
-    /* dramatic finessing to get the desired behavior. The math  */
-    /* in place now is calculating an offset from center using   */
-    /* the hard x/y locations of the UI mockups and finding the  */
-    /* difference from halfHeight/halfWidth to provide offsets   */
-    HomeNavigationButton {
-        id: app1
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: surfaceHeight * 0.037
-        anchors.horizontalCenterOffset: surfaceWidth * -0.3047
-        sourceIcon: modelPrivates.fmRadioIcon
-        appName: modelPrivates.fmRadioName
-        appId: modelPrivates.fmRadioId
+    Repeater {
+        id: applicationButtons
 
-        onOpenApplication: homeAppsInterface.openApplication(name, icon, id)
-    }
-    HomeNavigationButton {
-        id: app2
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: surfaceHeight * -0.2657
-        anchors.horizontalCenterOffset: surfaceWidth * -0.15
-        sourceIcon: modelPrivates.connectedHomeIcon
-        appName: modelPrivates.connectedHomeName
-        appId: modelPrivates.connectedHomeId
+        HomeNavigationButton {
+            anchors.centerIn: parent
+            anchors.verticalCenterOffset: surfaceHeight * offsetYFactors[index]
+            anchors.horizontalCenterOffset: surfaceWidth * offsetXFactors[index]
+            appName: model.appName
+            appId: model.appId
+            sourceIcon: {
+                var overrideIcon = overrideIcons[model.appId]
+                if (overrideIcon === undefined)
+                    return model.appIcon
+                else
+                    return overrideIcon
+            }
 
-        onOpenApplication: homeAppsInterface.openApplication(name, icon, id)
-    }
-    HomeNavigationButton {
-        id: app3
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: surfaceHeight * -0.0611
-        anchors.horizontalCenterOffset: surfaceWidth * -0.0365
-        sourceIcon: modelPrivates.hvacClimateIcon
-        appName: modelPrivates.hvacClimateName
-        appId: modelPrivates.hvacClimateId
-
-        onOpenApplication: homeAppsInterface.openApplication(name, icon, id)
-    }
-    HomeNavigationButton {
-        id: app4
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: surfaceHeight * 0.2917
-        anchors.horizontalCenterOffset: surfaceWidth * -0.0052
-        sourceIcon: modelPrivates.mediaManagerIcon
-        appName: modelPrivates.mediaManagerName
-        appId: modelPrivates.mediaManagerId
-
-        onOpenApplication: homeAppsInterface.openApplication(name, icon, id)
-    }
-    HomeNavigationButton {
-        id: app5
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: surfaceHeight * -0.2231
-        anchors.horizontalCenterOffset: surfaceWidth * 0.1432
-        sourceIcon: modelPrivates.browserIcon
-        appName: modelPrivates.browserName
-        appId: modelPrivates.browserId
-
-        onOpenApplication: homeAppsInterface.openApplication(name, icon, id)
-    }
-    HomeNavigationButton {
-        id: app6
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: surfaceHeight * 0.0213
-        anchors.horizontalCenterOffset: surfaceWidth * 0.2359
-        sourceIcon: modelPrivates.rviIcon
-        appName: modelPrivates.rviName
-        appId: modelPrivates.rviId
-
-        onOpenApplication: homeAppsInterface.openApplication(name, icon, id)
+            onOpenApplication: homeAppsInterface.openApplication(name, icon, id)
+        }
     }
 }

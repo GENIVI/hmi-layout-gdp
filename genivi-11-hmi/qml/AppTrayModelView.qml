@@ -2,9 +2,21 @@ import QtQuick 2.0
 
 Item {
     id: trayView
+    property alias applicationsModel: grid.model
 
     /* Propogation signal to interface with wider system */
     signal openApplication(string name, url icon, string id)
+
+    // For system applications we can give them launcher specific icons
+    // Non-system applications will use thier specified icon
+    property var overrideIcons : {
+        "com.jlr.fmradio": "qrc:/assets/FM-Radio.svg",
+        "com.jlr.connectedhome": "qrc:/assets/Connected-Home.svg",
+        "com.jlr.hvac": "qrc:/assets/HVAC-Climate.svg",
+        "com.jlr.media": "qrc:/assets/Media.svg",
+        "com.jlr.browser": "qrc:/assets/Browser.svg",
+        "com.jlr.rvi": "qrc:/assets/RVI.svg",
+    }
 
     Rectangle {
         id: trayBackDrop
@@ -12,8 +24,6 @@ Item {
         color: colors.lightGray
         opacity: 0.65
     }
-
-    AppTrayModel { id: tempModel }
 
     GridView {
         id: grid
@@ -24,11 +34,19 @@ Item {
             width: grid.cellWidth
             height: grid.cellHeight
 
-            Component.onCompleted: {
-                openApplication.connect(trayView.openApplication)
+            appId: model.appId
+            appName: model.appName
+            sourceIcon: {
+                var overrideIcon = overrideIcons[model.appId]
+                if (overrideIcon === undefined)
+                    return model.appIcon
+                else
+                    return overrideIcon
             }
+
+            onOpenApplication: trayView.openApplication(name, icon, id)
+
         }
         clip: true
-        model: tempModel
     }
 }

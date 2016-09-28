@@ -1,4 +1,6 @@
 TEMPLATE = subdirs
 
-SUBDIRS += applicationmodel \
-	   hmi-controller
+!desktop {
+    SUBDIRS += applicationmodel \
+               hmi-controller
+}

@@ -1,0 +1,66 @@
+The code in this repo is currently considered prototype code. It is graphically
+correct, but need quite a bit more work. Here is a run down of functionality
+and improvements that can be made over time.
+
+HmiService Plugin
+  
+  HmiService Class
+    The HmiService class represents the API required by the UI to function.
+    HmiService provides properties and invokable methods which in turn
+    simply call and return functions from AppManager and LayerController
+
+  AppManager
+    This role of this class is to read .app files from /usr/share/appliactions
+    and report to clients the list of installed applications on the device.
+    Look at the README.md file for more information about the format of files.
+    This class is entirely temporary in the grand scheme of things. Ideally
+    there would be a service that would provide this information via DBUS.
+    For expediency this class was not implemented via DBUS. This class is
+    implemented in the HMI Service plugin and not another plging because
+    LayerController depends on it. More on that in the LayerController
+    section.
+    
+  LayerController
+    The role of this class is to create and stack layers on the screen for
+    surfaces that are created by applications. This class will create one
+    layer for every process id that creates a surface. Because of
+    limitation in the IVI QtWayland and application can only create one
+    surface. The layer stack that is shown is dictated by the current
+    systemd unit that the laucher has instructed the HmiController to
+    show. When surfaces arrive ILM provides a property on the surface that
+    indicated what process id created it. The LayerController uses that pid
+    to create the layer and determine if this surface belongs to the current
+    unit beng displayed. Systemd has a funtion that should provide the unit
+    name froma pid GetUnitFromPID, but that function always returns the user
+    unit for all user services. Luckily the AppManager knows the unit and
+    executable names for all the applications. This is why LayerController
+    depends on AppManager. This class is mostly std c++ as it's meant to
+    eventually live out on DBUS once we break the AppManager dependancy and
+    have some extra time to work on this.
+    
+    There is currently code in the LayerManager that provides a developer
+    the conviencence of showing apps that are not run via services. This
+    will aide in the development of future applications, but ought to
+    be turned off in production. We should only show surfaces from units
+    that are known.
+    
+  AllApplicationsModel
+    The role of this class is to provide Qt Views with an alphabetical list of
+    installed applications. It depends on AppManager so this class also lives
+    in the HmiController plugin. This model is used to display the apps on there
+    slide out tray.
+    
+  HomeApplicaitonsModel
+    The role of this class is to drive the 6 application buttons that appear
+    on the home screen. Think of these like presets. The list is static right
+    now for expediency. All the applications currently in the list do not exist
+    and won't for some time. For this reason this model is not used and a QML
+    mock model is used in the launcher. This provides the correct look to the
+    home screen, but does not launchany applications. For now live apps will
+    appear on the tray only.
+    
+Desktop Development
+    This project was originally written on a desktop and for graphical designer
+    that is probably for the best. I preserved the ability to build for the desktop
+    but the build now requires qmake CONFIG+=desktop to run on a desktop Windows
+    or Linux machine.

@@ -1,5 +1,4 @@
 import QtQuick 2.0
-import com.genivi.hmicontroller 1.0
 
 Item {
     id: featureAreaInterface
@@ -31,11 +30,6 @@ Item {
     ListModel {
         id: openedAppsList
 
-    }
-
-    /* This will need interfaced to the Home parent object */
-    HMIController {
-        id: featureController
     }
 
     /* Application drawing space */
