@@ -15,8 +15,8 @@
 
 #include <iostream>
 
-static const int DEFAULT_SCREEN_WIDTH = 1920;
-static const int DEFAULT_SCREEN_HEIGHT = 1080;
+static const int DEFAULT_SCREEN_WIDTH = 1024;
+static const int DEFAULT_SCREEN_HEIGHT = 768;
 
 static LayerController* SELF = nullptr;
 
