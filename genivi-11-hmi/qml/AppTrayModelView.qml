@@ -14,7 +14,7 @@ Item {
         "com.jlr.connectedhome": "qrc:/assets/Connected-Home.svg",
         "com.jlr.hvac": "qrc:/assets/HVAC-Climate.svg",
         "com.jlr.media": "qrc:/assets/Media.svg",
-        "com.jlr.browser": "qrc:/assets/Browser.svg",
+        "demoui.service": "qrc:/assets/Browser.svg",
         "com.jlr.rvi": "qrc:/assets/RVI.svg",
     }
 

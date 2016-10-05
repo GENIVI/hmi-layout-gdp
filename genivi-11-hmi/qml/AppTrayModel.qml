@@ -24,7 +24,7 @@ ListModel {
     ListElement {
         appIcon: "qrc:/assets/Browser.svg"
         appName: "Browser"
-        appId: "com.jlr.browser"
+        appId: "demiui.service"
     }
     ListElement {
         appIcon: "qrc:/assets/RVI.svg"
