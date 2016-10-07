@@ -24,12 +24,12 @@ Item {
     // Non-system applications will use thier specified icon
     // TODO these are the same as the apps tray. Combine these
     property var overrideIcons : {
-        "com.jlr.fmradio": "qrc:/assets/FM-Radio.svg",
-        "com.jlr.connectedhome": "qrc:/assets/Connected-Home.svg",
-        "com.jlr.hvac": "qrc:/assets/HVAC-Climate.svg",
-        "com.jlr.media": "qrc:/assets/Media.svg",
-        "demoui.service": "qrc:/assets/Browser.svg",
-        "com.jlr.rvi": "qrc:/assets/RVI.svg",
+        "com.genivi.gdp.fmradio": "qrc:/assets/FM-Radio.svg",
+        "com.genivi.gdp.connectedhome": "qrc:/assets/Connected-Home.svg",
+        "com.genivi.gdp.hvac": "qrc:/assets/HVAC-Climate.svg",
+        "com.genivi.gdp.media": "qrc:/assets/Media.svg",
+        "demoui": "qrc:/assets/Browser.svg",
+        "com.genivi.gdp.rvi": "qrc:/assets/RVI.svg",
     }
 
     Repeater {

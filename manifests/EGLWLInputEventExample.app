@@ -1,4 +1,4 @@
 Name=Input Example
 Icon=
-Unit=EGLWLInputEventExample.service
+Unit=EGLWLInputEventExample
 Exec=/usr/bin/EGLWLInputEventExample
