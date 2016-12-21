@@ -39,7 +39,6 @@ Item {
         fillMode: Image.PreserveAspectFit
         smooth: true
         source: "qrc:/assets/Homepage-Background-with-lines-high-comp.jpg"
-        visible: !(appIsDisplayed)
     }
 
     /* Allows referencing to HomeApps and AppTray parents to be     */
@@ -66,7 +65,6 @@ Item {
             width: bgItemWidth
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
-            visible: !(appIsDisplayed)
 
             onOpenApplication: requestOpenHomeApplication(id);
         }
