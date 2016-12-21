@@ -2,6 +2,7 @@ import QtQuick 2.0
 
 Item {
     id: appTrayInterface
+    property alias applicationsModel: trayView.applicationsModel
 
     readonly property int sideBarWidth: appTrayInterface.width * 0.1
 
@@ -12,6 +13,9 @@ Item {
     signal openApplication(string name, url icon, string id)
 
     signal goHome()
+
+    signal aboutToSlideOut()
+    signal finishedSlidingIn()
 
     state: "HOME"
 
@@ -26,7 +30,10 @@ Item {
 
         /* Open up and extend to handle case difference of */
         /* going Home from an app, or going from AppTray   */
-        onGoHome: appTrayInterface.state = "HOME"
+        onGoHome: {
+            appTrayInterface.state = "HOME";
+            appTrayInterface.goHome()
+        }
 
         /* Sidebar toggle only opens or closes the AppTray. The  */
         /* appropriate care must be taken as states are extended */
@@ -58,7 +65,10 @@ Item {
             height: parent.height
             anchors.centerIn: parent
 
-            onOpenApplication: appTrayInterface.openApplication(name, icon, id)
+            onOpenApplication: {
+                appTrayInterface.openApplication(name, icon, id)
+                appTrayInterface.state = "HOME";
+            }
         }
     }
 
@@ -106,22 +116,29 @@ Item {
         Transition {
             from: "HOME"
             to: "OPEN"
-            NumberAnimation {
-                target: appTrayInterface
-                property: "x"
-                duration: appTrayAnimationDuration
+            SequentialAnimation {
+                ScriptAction {
+                    script: aboutToSlideOut()
+                }
+                NumberAnimation {
+                    target: appTrayInterface
+                    property: "x"
+                    duration: appTrayAnimationDuration
+                }
             }
         },
         Transition {
             from: "OPEN"
             to: "HOME"
-            NumberAnimation {
-                target: appTrayInterface
-                property: "x"
-                duration: appTrayAnimationDuration
-            }
-            ScriptAction {
-                script: appTrayInterface.goHome()
+            SequentialAnimation {
+                NumberAnimation {
+                    target: appTrayInterface
+                    property: "x"
+                    duration: appTrayAnimationDuration
+                }
+                ScriptAction {
+                    script: finishedSlidingIn()
+                }
             }
         }
     ]

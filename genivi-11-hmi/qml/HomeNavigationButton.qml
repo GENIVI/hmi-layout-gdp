@@ -126,24 +126,21 @@ Rectangle {
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
-
-        /* Could possibly change this to run an animation on */
-        /* the icon object instead of switching the PRESSED  */
-        /* state which allows a user to hold the icon to see */
-        /* the visual result of pressing the button          */
-        onPressed: {
-            navObjectArea.state = "PRESSED"
-            openApplication(appName, sourceIcon, appId);
-        }
-        onReleased: {
-            navObjectArea.state = "DEFAULT";
-        }
+        onPressed: openApplication(appName, sourceIcon, appId);
     }
 
+    /* Could possibly change this to run an animation on */
+    /* the icon object instead of switching the PRESSED  */
+    /* state which allows a user to hold the icon to see */
+    /* the visual result of pressing the button */
+    /* I don't think the user will get a chance to see this state */
+    /* As thier finger will be over the button */
     states: [
         State {
             name: "DEFAULT"
+            when: !(mouseArea.pressed)
             PropertyChanges {
                 target: iconOverlay
                 visible: false
@@ -158,6 +155,7 @@ Rectangle {
         },
         State {
             name: "PRESSED"
+            when: mouseArea.pressed
             PropertyChanges {
                 target: iconOverlay
                 visible: true

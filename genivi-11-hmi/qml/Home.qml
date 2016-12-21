@@ -3,53 +3,43 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: homeBase
-
-    /* Use painters order, setting visible to true, to go home */
-    visible: true
-
-    /* Screen dimension properties to remove binding loops on  */
-    /* painted dimensions                                      */
-    readonly property int fullWidth: homeBase.width
-    readonly property int fullHeight: homeBase.height
+    property alias homeApplicationsModel: homeApps.applicationsModel
+    property alias trayApplicationsModel: appTrayObject.applicationsModel
+    property bool appIsDisplayed: false
 
     /* These properties are to scale all visual components based on the  */
     /* dimensions of the fit-scaled background image locking all aspect  */
     /* ratios and positioning values within the bounds of the background */
     readonly property int bgItemHeight: backgroundItem.paintedHeight
     readonly property int bgItemWidth: backgroundItem.paintedWidth
-    // TODO: Find out where and why these properties are generating binding loops
-    //       Already spent time investigating and everything seems in order so far
-
+    readonly property rect applicationArea: {
+        var x = appTrayObject.sideBarWidth
+        var y = (backgroundItem.height - backgroundItem.paintedHeight) / 2
+        var width =  backgroundItem.paintedWidth - appTrayObject.sideBarWidth
+        var height = backgroundItem.paintedHeight
+        return Qt.rect(x, y, width, height)
+    }
 
     /* Prototype code for breaking out a similuated app-process system   */
     property alias applicationSurfaceParent: featureArea
 
-    /* Necessary to fill whitespace if the background */
-    /* fillMode fit preservation exposes any edges    */
-    Rectangle {
-        id: conditionalBackgroundFill
-        color: "black"
-        anchors.fill: parent
+    signal requestOpenHomeApplication(string id)
+    signal requestOpenTrayApplication(string id)
+    signal requestOpenHomeScreen()
+    signal requestSetApplicationArea(rect sceneArea)
 
-        visible: {
-            if (backgroundItem.paintedHeight < height || backgroundItem.paintedWidth < width) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-    /* Images need to have transparencies where necessary      */
-    /* and if the image is not an svg, it needs to be high-res */
+    signal trayAboutToSlideOut()
+    signal trayFinishedSlidingIn()
+
     Image {
         id: backgroundItem
-        width: fullWidth
-        height: fullHeight
+        anchors.fill: parent
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
         fillMode: Image.PreserveAspectFit
         smooth: true
         source: "qrc:/assets/Homepage-Background-with-lines-high-comp.jpg"
+        visible: !(appIsDisplayed)
     }
 
     /* Allows referencing to HomeApps and AppTray parents to be     */
@@ -59,6 +49,7 @@ Item {
         width: bgItemWidth
         height: bgItemHeight
         anchors.centerIn: parent
+        clip: true
 
         FeatureArea {
             id: featureArea
@@ -66,7 +57,7 @@ Item {
             width: bgItemWidth - appTrayObject.sideBarWidth
             anchors.left: appTrayObject.right
             anchors.leftMargin: appTrayObject.sideBarWidth
-            visible: false
+            visible: appIsDisplayed
         }
 
         HomeApps {
@@ -75,10 +66,9 @@ Item {
             width: bgItemWidth
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
+            visible: !(appIsDisplayed)
 
-            onOpenApplication: {
-                console.log("STUB OUTPUT: home-nav apps open application handler");
-            }
+            onOpenApplication: requestOpenHomeApplication(id);
         }
 
         AppTray {
@@ -88,13 +78,11 @@ Item {
             anchors.right: parent.left
             anchors.verticalCenter: parent.verticalCenter
 
-            onOpenApplication: {
-                console.log("STUB OUTPUT: apptray open application handler");
-            }
+            onOpenApplication: requestOpenTrayApplication(id);
+            onGoHome: requestOpenHomeScreen()
 
-            onGoHome: {
-                console.log("STUB OUTPUT: apptray go home handler");
-            }
+            onAboutToSlideOut: trayAboutToSlideOut()
+            onFinishedSlidingIn: trayFinishedSlidingIn()
         }
     }
 }

@@ -6,14 +6,31 @@ CONFIG += qt plugin c++11
 TARGET = $$qtLibraryTarget($$TARGET)
 uri = com.genivi.hmicontroller
 
+# ILM libs
+LIBS += -lilmCommon -lilmClient -lilmControl -lilmInput
+
+#Systemd libs
+LIBS += -lsystemd
+
 # Input
 SOURCES += \
     hmi-controller_plugin.cpp \
-    hmicontroller.cpp
+    hmicontroller.cpp \
+    layercontroller.cpp \
+    appmanager.cpp \
+    allapplicationsmodel.cpp \
+    homeapplicationsmodel.cpp \
+    applicationsmodelbase.cpp
 
 HEADERS += \
     hmi-controller_plugin.h \
-    hmicontroller.h
+    hmicontroller.h \
+    layercontroller.h \
+    appmanager.h \
+    ivi-controller-client-protocol.h \
+    allapplicationsmodel.h \
+    homeapplicationsmodel.h \
+    applicationsmodelbase.h
 
 DISTFILES = qmldir
 
