@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 
-SUBDIRS += genivi-11-hmi \
+SUBDIRS += gdp-hmi \
 	   plugins
 
 QML_IMPORT_PATH = plugins

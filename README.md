@@ -1,4 +1,4 @@
-Prototype of new GENIVI HMI designs for GDP 11
+Prototype of new GENIVI HMI designs for GDP
 ---------------------------------------------------
 
 Prerequisities
@@ -26,7 +26,7 @@ Running on the Device
 * Add a Kit for the GDP SDK
 * Open Project and select gdp-hmi.pro from the top level of the repository
 * Build the project with Qt Creator
-* Copy genivi-11-hmi to /usr/bin on the device
+* Copy gdp-hmi to /usr/bin on the device
 * Copy the HmiController plugin lib and qmldir to /usr/lib/qt5/qml/com.genivi.hmicontroller on the device
 * You can easily write a script for the above and use it as a deploy step in Qt Creator
 * Copy the manifest files from manifets to /usr/share/applications on the device
@@ -37,7 +37,7 @@ Running on the Device
     systemctl --user stop gdp-hmi-launcher2
     systemctl --user stop gdp-hmi-controller
     ```
-* Run /usr/bin/genivi-11-hmi -platform wayland
+* Run /usr/bin/gdp-hmi -platform wayland
 * You can easily tell Qt Creator to run this binary from the Project Tab's Run Configuration
 * If the home screen and tray are empty you are missing .app files in /usr/share/applications. See below.
 
