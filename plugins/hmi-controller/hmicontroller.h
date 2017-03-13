@@ -8,6 +8,7 @@
 #include "layercontroller.h"
 #include "allapplicationsmodel.h"
 #include "homeapplicationsmodel.h"
+#include "lifecycleconsumer.h"
 
 class HMIController : public QObject
 {
@@ -54,6 +55,7 @@ protected:
     bool unitExists(const QString & unit);
 
 private:
+    LifeCycleConsumer m_lifecycleconsumer;
     AppManager  m_appManager;
     LayerController m_layerController;
     AllApplicationsModel m_allApplicationsModel;

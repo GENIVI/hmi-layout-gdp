@@ -1,6 +1,6 @@
 TEMPLATE = lib
 TARGET = hmi-controller
-QT += qml quick
+QT += qml quick dbus
 CONFIG += qt plugin c++11
 
 TARGET = $$qtLibraryTarget($$TARGET)
@@ -20,7 +20,9 @@ SOURCES += \
     appmanager.cpp \
     allapplicationsmodel.cpp \
     homeapplicationsmodel.cpp \
-    applicationsmodelbase.cpp
+    applicationsmodelbase.cpp \
+    lifecycleconsumer.cpp \
+    lifecycleconsumeradaptor.cpp
 
 HEADERS += \
     hmi-controller_plugin.h \
@@ -30,7 +32,9 @@ HEADERS += \
     ivi-controller-client-protocol.h \
     allapplicationsmodel.h \
     homeapplicationsmodel.h \
-    applicationsmodelbase.h
+    applicationsmodelbase.h \
+    lifecycleconsumer.h \
+    lifecycleconsumeradaptor.h
 
 DISTFILES = qmldir
 
