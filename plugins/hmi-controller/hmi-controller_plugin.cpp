@@ -1,5 +1,6 @@
 #include "hmi-controller_plugin.h"
 #include "hmicontroller.h"
+#include <QDebug>
 
 #include <qqml.h>
 
