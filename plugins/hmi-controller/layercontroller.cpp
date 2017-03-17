@@ -15,6 +15,8 @@
 
 #include <iostream>
 
+#include <QProcess>
+
 static const int DEFAULT_SCREEN_WIDTH = 1024;
 static const int DEFAULT_SCREEN_HEIGHT = 768;
 
@@ -90,6 +92,18 @@ LayerController::~LayerController()
     std::list<ProcessInfo>::iterator it = m_processList.begin();
     for (; it != m_processList.end(); ++it) {
         ilm_layerRemove(it->processId);
+
+        QString unitName = QString::fromStdString(it->unitName);
+        QString startCmd("systemctl stop %1");
+        int ret = QProcess::execute(startCmd.arg(unitName));
+
+        QString killcmd("kill %1");
+        int retKill = QProcess::execute(killcmd.arg(QString::number(it->processId)));
+
+        if (retKill != 0) {
+            killcmd = QString("kill -9 %1");
+            QProcess::execute(killcmd.arg(QString::number(it->processId)));
+        }
     }
     ilm_layerRemove(m_backgroundSurfaceId);
     ilm_commitChanges();
