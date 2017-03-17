@@ -35,6 +35,13 @@ signals: // These may map to DBUS in the future
     void applicationClosed(const std::string& unit);
     void currentUnitChanged(const std::string& unit);
 
+    /**
+     * @brief backgroundLoaded called when the HMI background is fully loaded
+     *
+     * This means that there it is possible to execute applications.
+     */
+    void backgroundLoaded();
+
 protected:
     void setCurrentUnit(const std::string& unit);
 
@@ -100,6 +107,7 @@ private:
     unsigned int m_currentLayer;
 
     bool m_launcherOnTop;
+    bool m_backgroundLoaded = false;
 };
 
 #endif /* LAYERCONTROLLER_H */

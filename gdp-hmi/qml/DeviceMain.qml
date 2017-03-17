@@ -14,6 +14,7 @@ Window {
 
     HMIController {
         id: hmiController
+        property bool isLUCLoaded: false
     }
 
     Home {
@@ -29,6 +30,7 @@ Window {
         trayApplicationsModel: hmiController.allApplicationsModel
 
         onRequestOpenHomeApplication: { hmiController.openApp(id); hmiController.stackLauncherOnTop(false) }
+
         onRequestOpenTrayApplication: hmiController.openApp(id)
         onRequestOpenHomeScreen: hmiController.openHomeScreen()
         onApplicationAreaChanged: hmiController.setApplicationArea(applicationArea)
