@@ -29,9 +29,11 @@ Window {
         //homeApplicationsModel: hmiController.homeApplicationsModel
         trayApplicationsModel: hmiController.allApplicationsModel
 
-        onRequestOpenHomeApplication: { hmiController.openApp(id); hmiController.stackLauncherOnTop(false) }
-
         onRequestOpenTrayApplication: hmiController.openApp(id)
+        onRequestOpenHomeApplication: {
+            hmiController.openApp(id);
+            hmiController.stackLauncherOnTop(false)
+        }
         onRequestOpenHomeScreen: hmiController.openHomeScreen()
         onApplicationAreaChanged: hmiController.setApplicationArea(applicationArea)
         onTrayAboutToSlideOut: hmiController.stackLauncherOnTop(true)
