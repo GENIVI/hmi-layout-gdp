@@ -423,6 +423,11 @@ void LayerController::focusOnLayer(unsigned int layerId)
                                    IVI_CONTROLLER_SURFACE_INPUT_DEVICE_ALL, ILM_TRUE);
 
     ilm_commitChanges();
+
+    if (processInfo->appID == "" && !m_backgroundLoaded) {
+        m_backgroundLoaded = true;
+        emit backgroundLoaded();
+    }
 }
 
 void LayerController::addSurface(unsigned int surfaceId)

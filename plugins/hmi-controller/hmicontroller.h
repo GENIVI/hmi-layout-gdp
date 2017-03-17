@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QRect>
+#include <QFile>
 
 #include "appmanager.h"
 #include "layercontroller.h"
@@ -46,6 +47,10 @@ public:
 
     Q_INVOKABLE void stackLauncherOnTop(bool onTop);
 
+public slots:
+    // Open the last used app
+    Q_INVOKABLE void loadLUC();
+
 signals:
     void appIsDisplayedChanged();
     void applicationAreaChanged();
@@ -61,7 +66,10 @@ private:
     AllApplicationsModel m_allApplicationsModel;
     HomeApplicationsModel m_homeApplicationsModel;
     bool m_appIsDisplayed;
+    QFile m_lucFile;
 
+    QString getLUC();
+    void setLUC(const QString &id);
 };
 
 #endif // HMICONTROLLER_H
