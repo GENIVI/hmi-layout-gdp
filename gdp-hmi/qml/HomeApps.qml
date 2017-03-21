@@ -27,6 +27,7 @@ Item {
             anchors.centerIn: parent
             anchors.verticalCenterOffset: surfaceHeight * offsetYFactors[index]
             anchors.horizontalCenterOffset: surfaceWidth * offsetXFactors[index]
+            floatingAnimation: false
             appName: model.appName
             appId: model.appId
             sourceIcon: model.appIcon
