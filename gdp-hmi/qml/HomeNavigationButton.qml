@@ -9,6 +9,7 @@ Rectangle {
     width: height
     color: "transparent"
 
+    property alias floatingAnimation: floatTimer.running
     property string appName
     property url sourceIcon
     property string appId
