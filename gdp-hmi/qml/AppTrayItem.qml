@@ -28,7 +28,7 @@ Item {
             width: parent.width
             height: parent.height
             anchors.centerIn: parent
-            opacity: 0.5
+            opacity: 0.5 //  the bg color of the tray buttons
             color: colors.primaryOrange
         }
 
