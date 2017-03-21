@@ -22,7 +22,7 @@ Item {
         id: trayBackDrop
         anchors.fill: parent
         color: colors.lightGray
-        opacity: 0.65
+        opacity:1 // opacity of the tray's background
     }
 
     GridView {
