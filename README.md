@@ -1,5 +1,5 @@
-Prototype of new GENIVI HMI designs for GDP
----------------------------------------------------
+New GENIVI HMI designs for GDP
+==============================
 
 Prerequisities
 ---------------
