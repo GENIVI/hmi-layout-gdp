@@ -14,12 +14,12 @@ ListModel {
     ListElement {
         appIcon: "qrc:/assets/HVAC-Climate.svg"
         appName: "Climate Control"
-        appId: "com.genivi.gdp..hvac"
+        appId: "com.genivi.gdp.hvac"
     }
     ListElement {
         appIcon: "qrc:/assets/Media.svg"
         appName: "Media Manager"
-        appId: "com.genivi.gdp..media"
+        appId: "com.genivi.gdp.media"
     }
     ListElement {
         appIcon: "qrc:/assets/Browser.svg"
