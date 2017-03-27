@@ -23,8 +23,6 @@ public:
 protected:
     void loadApplications();
 
-    void addToAppInfo(AppInfo& appInfo, const std::string& key, const std::string value);
-
     bool isAppInfoComplete(const AppInfo& appInfo) const;
 
 private:

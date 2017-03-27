@@ -1,15 +1,10 @@
 #include "appmanager.h"
 
-#include <dirent.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include <QDir>
+#include <QFile>
+#include <QSettings>
 
-#include <cstring>
-#include <fstream>
-#include <iostream>
-
-static const char* APP_MANIFESTS_DIR = "/usr/share/applications/";
+static const QString APP_MANIFESTS_DIR("/usr/share/applications/");
 
 AppManager::AppManager()
 {
@@ -24,55 +19,33 @@ std::list<AppManager::AppInfo> AppManager::applicationList()
 void AppManager::loadApplications()
 {
     // Open application mainfests directory
-    DIR* dir = opendir(APP_MANIFESTS_DIR);
-    if (dir == NULL) {
-        std::cout << "Error : Failed to open manifests directory " << APP_MANIFESTS_DIR << std::endl;
+    QDir appsDir(APP_MANIFESTS_DIR);
+    if (!appsDir.exists()) {
+        qWarning("Application directory %s not found", APP_MANIFESTS_DIR.toStdString().c_str());
         return;
     }
 
-    // Read each manifest file
-    struct dirent* entry;
-    while ((entry = readdir(dir))) {
-        // Skip dir files
-        if (0 == strcmp(entry->d_name, "."))
-            continue;
-        if (0 == strcmp(entry->d_name, ".."))
-            continue;
+    // Read each desktopfile file
+    QStringList nameFilter;
+    nameFilter << "*.desktop";
+    for (QFileInfo &fileInfo : appsDir.entryInfoList(nameFilter)) {
+        QSettings desktopfile(fileInfo.absoluteFilePath(), QSettings::IniFormat);
 
-        // Open manifest file
-        std::string manifestFileName = APP_MANIFESTS_DIR;
-        manifestFileName.append(entry->d_name);
-        std::cout << "Loading app data for: " << manifestFileName << std::endl;
-        std::ifstream manifest(manifestFileName.c_str());
-
-        // Loop through manifest populating an AppInfo
+        desktopfile.beginGroup("Desktop Entry");
         AppInfo appInfo;
-        while (manifest) {
-            std::string line;
-            std::getline(manifest, line);
-            size_t posOfDelimiter = line.find("=");
-            std::string key = line.substr(0, posOfDelimiter);
-            std::string value = line.substr(posOfDelimiter+1, line.size());
-            addToAppInfo(appInfo, key, value);
+        appInfo.name = desktopfile.value("Name").toString().toStdString();
+        appInfo.icon = desktopfile.value("Icon").toString().toStdString();
+        appInfo.unit = desktopfile.value("Unit").toString().toStdString();
+        appInfo.exec = desktopfile.value("Exec").toString().toStdString();
+        desktopfile.endGroup();
+
+        if(!isAppInfoComplete(appInfo)) {
+            qWarning("Manifest file incomplete: %s", desktopfile.fileName().toStdString().c_str());
+            continue;
         }
 
-        if(isAppInfoComplete(appInfo))
-            m_applicationList.push_back(appInfo);
-        else
-            std::cout << "Manifest file incomplete: " << manifestFileName << std::endl;
+        m_applicationList.push_back(appInfo);
     }
-}
-
-void AppManager::addToAppInfo(AppManager::AppInfo &appInfo, const std::__cxx11::string &key, const std::__cxx11::string value)
-{
-    if (key == "Name")
-        appInfo.name = value;
-    else if (key == "Icon")
-        appInfo.icon = value;
-    else if (key == "Unit")
-        appInfo.unit = value;
-    else if (key == "Exec")
-        appInfo.exec = value;
 }
 
 bool AppManager::isAppInfoComplete(const AppManager::AppInfo &appInfo) const
