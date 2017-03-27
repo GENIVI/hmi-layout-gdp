@@ -62,21 +62,7 @@ Item {
         }
     }
 
-    ColorOverlay {
-        id: arrowOverlay
-        anchors.fill: doubleArrow
-        source: doubleArrow
-        opacity: 0.5
-        color: timerFlag ? colors.lightGray : colors.primaryOrange
 
-        Behavior on color {
-            ColorAnimation {
-                duration: 650
-
-                onStopped: timerFlag = false
-            }
-        }
-    }
 
     Rectangle {
         id: dynamicBar
@@ -112,18 +98,5 @@ Item {
             }
         }
     }
-    ColorOverlay {
-        id: barOverlay
-        anchors.fill: dynamicBar
-        source: dynamicBar
-        opacity: 0.5
-        color: timerFlag ? colors.lightGray : colors.primaryOrange
 
-        Behavior on color {
-            ColorAnimation {
-                duration: 650
-                onStopped: timerFlag = false
-            }
-        }
-    }
 }
