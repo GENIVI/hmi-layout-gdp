@@ -10,6 +10,16 @@ Item {
 
     signal logoClicked ()
 
+    MouseArea {
+        anchors.fill: parent
+        onPressed: {
+            geniviGlow.visible = true;
+            logoClicked();
+        }
+        onReleased: {
+            geniviGlow.visible = false;
+        }
+    }
     /* Helpful for positioning the logo with nice padding */
     Item {
         id: logoContainer
@@ -37,16 +47,7 @@ Item {
             visible: false
             opacity: 0.5
         }
-        MouseArea {
-            anchors.fill: parent
-            onPressed: {
-                geniviGlow.visible = true;
-                logoClicked();
-            }
-            onReleased: {
-                geniviGlow.visible = false;
-            }
-        }
+
     }
 
     /* Need to find out why these two text objects */

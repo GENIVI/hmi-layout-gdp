@@ -1,6 +1,6 @@
 import QtQuick 2.0
 
-Item {
+Rectangle {
     id: sidebarContainer
 
     property int commonAnimationDuration
@@ -17,6 +17,8 @@ Item {
         trayButtonObject.screenSideLeft = true;
         trayButtonObject.barTimer.restart();
     }
+
+    color: "#873a1f" // background of the tray bar/button
 
     GeniviLogo {
         id: geniviLogoObject

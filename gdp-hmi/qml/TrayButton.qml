@@ -53,7 +53,6 @@ Item {
             /* Expands the hit area slightly beyond the parent area */
             anchors.leftMargin: -parent.width * 0.1
             anchors.rightMargin: -parent.width * 0.1
-            anchors.topMargin: -parent.height * 0.25
             anchors.bottomMargin: -parent.height * 0.25
 
             onClicked: {
@@ -62,6 +61,7 @@ Item {
             }
         }
     }
+
     ColorOverlay {
         id: arrowOverlay
         anchors.fill: doubleArrow
@@ -97,13 +97,13 @@ Item {
 
         function resetBar () {
             dynamicBar.height = Qt.binding(
-                                function () {
-                                    return trayButtonInterface.height * 0.895;
-                                });
+                        function () {
+                            return trayButtonInterface.height * 0.895;
+                        });
             dynamicBar.width = Qt.binding(
-                                function () {
-                                    return trayButtonInterface.width * 0.0225;
-                                });
+                        function () {
+                            return trayButtonInterface.width * 0.0225;
+                        });
         }
 
         Behavior on height {
