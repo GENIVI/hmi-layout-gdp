@@ -3,6 +3,7 @@
 
 #include <list>
 #include <string>
+#include <QString>
 
 //TODO Move AppManager and Layer Controller to HMI Controller DBUS service
 
@@ -19,6 +20,7 @@ public:
     AppManager();
 
     std::list<AppInfo> applicationList();
+    bool unitExists(const QString & unit);
 
 protected:
     void loadApplications();
