@@ -93,10 +93,6 @@ LayerController::~LayerController()
     for (; it != m_processList.end(); ++it) {
         ilm_layerRemove(it->processId);
 
-        QString unitName = QString::fromStdString(it->unitName);
-        QString startCmd("systemctl stop %1");
-        int ret = QProcess::execute(startCmd.arg(unitName));
-
         QString killcmd("kill %1");
         int retKill = QProcess::execute(killcmd.arg(QString::number(it->processId)));
 
@@ -588,4 +584,17 @@ QString LayerController::unitFromPid(unsigned int pid)
     }
 
     return QString();
+}
+
+void LayerController::addAppProcess(const AppManager::AppInfo app, const unsigned int pid)
+{
+    ProcessInfo pinfo;
+    pinfo.processId = pid;
+    pinfo.unitName = app.unit.toStdString();
+    pinfo.surfaceList = {};
+
+    // Create layer for new app
+    createLayer(pid);
+
+    m_processList.push_back(pinfo);
 }

@@ -6,8 +6,7 @@
 #include <vector>
 
 #include <QObject>
-
-class AppManager;
+#include <appmanager.h>
 
 //TODO Move AppManager and Layer Controller to HMI Controller DBUS service
 
@@ -29,6 +28,7 @@ public:
     void setAppArea(int x, int y, int width, int height);
 
     void stackLauncherOnTop(bool onTop);
+    void addAppProcess(const AppManager::AppInfo app, const unsigned int pid);
 
 signals: // These may map to DBUS in the future
     void applicationReady(const std::string& unit);
