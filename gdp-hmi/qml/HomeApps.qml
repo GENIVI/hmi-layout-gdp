@@ -20,18 +20,6 @@ Item {
         0.037, -0.2657, -0.0611, 0.2917, -0.2231, 0.0213
     ]
 
-    // For system applications we can give them launcher specific icons
-    // Non-system applications will use thier specified icon
-    // TODO these are the same as the apps tray. Combine these
-    property var overrideIcons : {
-        "com.genivi.gdp.fmradio": "qrc:/assets/FM-Radio.svg",
-        "com.genivi.gdp.connectedhome": "qrc:/assets/Connected-Home.svg",
-        "com.genivi.gdp.hvac": "qrc:/assets/HVAC-Climate.svg",
-        "com.genivi.gdp.media": "qrc:/assets/Media.svg",
-        "demoui": "qrc:/assets/Browser.svg",
-        "com.genivi.gdp.rvi": "qrc:/assets/RVI.svg",
-    }
-
     Repeater {
         id: applicationButtons
 
@@ -41,13 +29,7 @@ Item {
             anchors.horizontalCenterOffset: surfaceWidth * offsetXFactors[index]
             appName: model.appName
             appId: model.appId
-            sourceIcon: {
-                var overrideIcon = overrideIcons[model.appId]
-                if (overrideIcon === undefined)
-                    return model.appIcon
-                else
-                    return overrideIcon
-            }
+            sourceIcon: model.appIcon
 
             onOpenApplication: homeAppsInterface.openApplication(name, icon, id)
         }
