@@ -14,12 +14,8 @@ public:
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
 
-protected:
-    AppManager::AppInfo appInfoFromUnit(const QString& unit) const;
-
 private:
     AppManager& m_appManager;
-    std::list<AppManager::AppInfo> m_apps;
     QStringList m_homeApplicationIds;
 };
 
