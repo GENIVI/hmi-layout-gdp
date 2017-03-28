@@ -584,13 +584,7 @@ std::string LayerController::unitFromPid(unsigned int pid)
     if (linkSz > 0) {
         resolvedLink[linkSz] = '\0';
         std::string execName(resolvedLink);
-
-        std::list<AppManager::AppInfo> apps = m_appManager.applicationList();
-        std::list<AppManager::AppInfo>::iterator it = apps.begin();
-        for(; it != apps.end(); ++it) {
-            if (it->exec == execName)
-                return it->unit;
-        }
+        return m_appManager.appInfoFromExec(QString::fromStdString(execName)).unit;
     }
 
     return std::string();

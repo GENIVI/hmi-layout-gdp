@@ -74,3 +74,14 @@ AppManager::AppInfo AppManager::appInfoFromUnit(const QString &unit) const
 
     return AppManager::AppInfo();
 }
+
+AppManager::AppInfo AppManager::appInfoFromExec(const QString &exec) const
+{
+    auto it = m_applicationList.begin();
+    for(; it != m_applicationList.end(); ++it) {
+        if (it->exec == exec.toStdString())
+            return *it;
+    }
+
+    return AppManager::AppInfo();
+}
