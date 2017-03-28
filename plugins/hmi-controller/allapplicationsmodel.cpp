@@ -11,8 +11,7 @@ static bool appInfoCompare(const AppManager::AppInfo& a, const AppManager::AppIn
 }
 
 AllApplicationsModel::AllApplicationsModel(AppManager &appManager) :
-    m_appManager(appManager),
-    m_apps(m_appManager.applicationList())
+    m_apps(appManager.applicationList())
 {
     m_apps.sort(appInfoCompare);
 }
@@ -20,7 +19,7 @@ AllApplicationsModel::AllApplicationsModel(AppManager &appManager) :
 int AllApplicationsModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return m_appManager.applicationList().size();
+    return m_apps.size();
 }
 
 QVariant AllApplicationsModel::data(const QModelIndex &index, int role) const
