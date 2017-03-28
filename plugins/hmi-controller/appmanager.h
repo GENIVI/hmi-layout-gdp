@@ -2,7 +2,6 @@
 #define APPMANAGER_H
 
 #include <list>
-#include <string>
 #include <QString>
 
 //TODO Move AppManager and Layer Controller to HMI Controller DBUS service
@@ -11,10 +10,10 @@ class AppManager
 {
 public:
     struct AppInfo {
-        std::string name;
-        std::string icon;
-        std::string unit;
-        std::string exec;
+        QString name;
+        QString icon;
+        QString unit;
+        QString exec;
     };
 
     AppManager();

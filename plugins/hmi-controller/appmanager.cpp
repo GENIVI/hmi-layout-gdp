@@ -33,10 +33,10 @@ void AppManager::loadApplications()
 
         desktopfile.beginGroup("Desktop Entry");
         AppInfo appInfo;
-        appInfo.name = desktopfile.value("Name").toString().toStdString();
-        appInfo.icon = desktopfile.value("Icon").toString().toStdString();
-        appInfo.unit = desktopfile.value("Unit").toString().toStdString();
-        appInfo.exec = desktopfile.value("Exec").toString().toStdString();
+        appInfo.name = desktopfile.value("Name").toString();
+        appInfo.icon = desktopfile.value("Icon").toString();
+        appInfo.unit = desktopfile.value("Unit").toString();
+        appInfo.exec = desktopfile.value("Exec").toString();
         desktopfile.endGroup();
 
         if(!isAppInfoComplete(appInfo)) {
@@ -62,7 +62,7 @@ AppManager::AppInfo AppManager::appInfoFromUnit(const QString &unit) const
 {
     auto it = m_applicationList.begin();
     for (; it != m_applicationList.end(); ++it) {
-        if (it->unit == unit.toStdString())
+        if (it->unit == unit)
             return *it;
     }
 
@@ -73,7 +73,7 @@ AppManager::AppInfo AppManager::appInfoFromExec(const QString &exec) const
 {
     auto it = m_applicationList.begin();
     for(; it != m_applicationList.end(); ++it) {
-        if (it->exec == exec.toStdString())
+        if (it->exec == exec)
             return *it;
     }
 

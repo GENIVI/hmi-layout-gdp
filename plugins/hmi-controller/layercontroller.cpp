@@ -449,7 +449,7 @@ void LayerController::addSurface(unsigned int surfaceId)
     ProcessInfo* processInfo = processInfoFromPid(props.creatorPid);
     if(processInfo == 0) { // If the info isn't in the list add it
         ProcessInfo newInfo;
-        newInfo.unitName = unitFromPid(props.creatorPid);
+        newInfo.unitName = unitFromPid(props.creatorPid).toStdString();
         newInfo.processId = props.creatorPid;
         m_processList.push_back(newInfo);
         processInfo = processInfoFromPid(props.creatorPid);
@@ -574,7 +574,7 @@ LayerController::ProcessInfo* LayerController::processInfoFromSurfaceId(unsigned
     return 0;
 }
 
-std::string LayerController::unitFromPid(unsigned int pid)
+QString LayerController::unitFromPid(unsigned int pid)
 {
     std::string pidStr = std::to_string(pid);
     std::string pidExePath = std::string("/proc/") + pidStr + "/exe";
@@ -587,5 +587,5 @@ std::string LayerController::unitFromPid(unsigned int pid)
         return m_appManager.appInfoFromExec(QString::fromStdString(execName)).unit;
     }
 
-    return std::string();
+    return QString();
 }

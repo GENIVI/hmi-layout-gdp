@@ -86,7 +86,7 @@ private:
 
     // TODO only necessary because systemd reports the user unit
     // for user slice services rather than the actual service path
-    std::string unitFromPid(unsigned int pid);
+    QString unitFromPid(unsigned int pid);
 
 private:
     AppManager& m_appManager;
