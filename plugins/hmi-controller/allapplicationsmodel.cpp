@@ -4,8 +4,7 @@
 
 static bool appInfoCompare(const AppManager::AppInfo& a, const AppManager::AppInfo& b)
 {
-    int comp = QString::localeAwareCompare(QString::fromStdString(a.name),
-                                           QString::fromStdString(b.name));
+    int comp = QString::localeAwareCompare(a.name, b.name);
 
     return (comp < 0);
 }
@@ -28,9 +27,9 @@ QVariant AllApplicationsModel::data(const QModelIndex &index, int role) const
     std::advance(it, index.row());
 
     switch (role) {
-        case AppIdRole: return QString::fromStdString(it->unit);
-        case AppNameRole: return QString::fromStdString(it->name);
-        case AppIconRole: return QString::fromStdString(it->icon);
+        case AppIdRole:   return it->unit;
+        case AppNameRole: return it->name;
+        case AppIconRole: return it->icon;
         default: return QVariant();
     }
 }

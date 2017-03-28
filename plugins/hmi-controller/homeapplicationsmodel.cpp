@@ -26,9 +26,9 @@ QVariant HomeApplicationsModel::data(const QModelIndex &index, int role) const
     AppManager::AppInfo info = m_appManager.appInfoFromUnit(unit);
 
     switch (role) {
-        case AppIdRole: return QString::fromStdString(info.unit);
-        case AppNameRole: return QString::fromStdString(info.name);
-        case AppIconRole: return QString::fromStdString(info.icon);
+        case AppIdRole:   return info.unit;
+        case AppNameRole: return info.name;
+        case AppIconRole: return info.icon;
         default: return QVariant();
     }
 }
