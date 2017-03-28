@@ -53,15 +53,9 @@ bool AppManager::isAppInfoComplete(const AppManager::AppInfo &appInfo) const
     return (appInfo.name.size() > 0 && appInfo.unit.size() > 0 && appInfo.exec.size() > 0);
 }
 
-bool AppManager::unitExists(const QString &unit)
+bool AppManager::unitExists(const QString &unit) const
 {
-    auto it = m_applicationList.begin();
-    for(; it != m_applicationList.end(); ++it) {
-        if (it->unit == unit.toStdString())
-            return true;
-    }
-
-    return false;
+    return isAppInfoComplete(appInfoFromUnit(unit));
 }
 
 AppManager::AppInfo AppManager::appInfoFromUnit(const QString &unit) const
