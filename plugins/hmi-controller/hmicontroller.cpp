@@ -112,13 +112,17 @@ void HMIController::openApp(const QString &unitName)
     }
 
     if (false == m_layerController.raiseUnit(unitName.toStdString())) {
-        QString startCmd("systemctl --user restart %1");
-        int ret = QProcess::execute(startCmd.arg(unitName)); //TODO replace with systemd DBUS
+        AppManager::AppInfo app = m_appManager.appInfoFromUnit(unitName);
 
-        if (0 != ret) {
-           qWarning("Could not start %s.", unitName.toStdString().c_str());
+        QProcess *process = new QProcess();
+        process->start(app.exec);
+        process->waitForStarted();
+
+        if (process->processId() == 0) {
+           qWarning("Could not run '%s'.", app.exec.toStdString().c_str());
            return;
         }
+        m_layerController.addAppProcess(app, process->processId());
     }
 
     setLUC(unitName);
