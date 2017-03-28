@@ -14,7 +14,6 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
 
 private:
-    AppManager& m_appManager;
     std::list<AppManager::AppInfo> m_apps;
 };
 
