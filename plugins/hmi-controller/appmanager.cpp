@@ -35,7 +35,7 @@ void AppManager::loadApplications()
         AppInfo appInfo;
         appInfo.name = desktopfile.value("Name").toString();
         appInfo.icon = desktopfile.value("Icon").toString();
-        appInfo.unit = desktopfile.value("Unit").toString();
+        appInfo.unit = fileInfo.absoluteFilePath();
         appInfo.exec = desktopfile.value("Exec").toString();
         desktopfile.endGroup();
 
