@@ -1,8 +1,7 @@
 #include "homeapplicationsmodel.h"
 
 HomeApplicationsModel::HomeApplicationsModel(AppManager& appManager) :
-    m_appManager(appManager),
-    m_apps(m_appManager.applicationList())
+    m_appManager(appManager)
 {
     // TODO load home apps from persistence
     // TODO allow the user to change this list
@@ -24,7 +23,7 @@ int HomeApplicationsModel::rowCount(const QModelIndex &parent) const
 QVariant HomeApplicationsModel::data(const QModelIndex &index, int role) const
 {
     QString unit = m_homeApplicationIds[index.row()];
-    AppManager::AppInfo info = appInfoFromUnit(unit);
+    AppManager::AppInfo info = m_appManager.appInfoFromUnit(unit);
 
     switch (role) {
         case AppIdRole: return QString::fromStdString(info.unit);
@@ -32,15 +31,4 @@ QVariant HomeApplicationsModel::data(const QModelIndex &index, int role) const
         case AppIconRole: return QString::fromStdString(info.icon);
         default: return QVariant();
     }
-}
-
-AppManager::AppInfo HomeApplicationsModel::appInfoFromUnit(const QString &unit) const
-{
-    auto it = m_apps.begin();
-    for (; it != m_apps.end(); ++it) {
-        if (it->unit == unit.toStdString())
-            return *it;
-    }
-
-    return AppManager::AppInfo();
 }

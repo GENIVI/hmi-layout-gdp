@@ -63,3 +63,14 @@ bool AppManager::unitExists(const QString &unit)
 
     return false;
 }
+
+AppManager::AppInfo AppManager::appInfoFromUnit(const QString &unit) const
+{
+    auto it = m_applicationList.begin();
+    for (; it != m_applicationList.end(); ++it) {
+        if (it->unit == unit.toStdString())
+            return *it;
+    }
+
+    return AppManager::AppInfo();
+}
