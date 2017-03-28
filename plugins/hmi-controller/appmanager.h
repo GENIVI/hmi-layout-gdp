@@ -22,6 +22,7 @@ public:
     std::list<AppInfo> applicationList();
     bool unitExists(const QString & unit);
     AppManager::AppInfo appInfoFromUnit(const QString& unit) const;
+    AppManager::AppInfo appInfoFromExec(const QString &exec) const;
 
 protected:
     void loadApplications();
