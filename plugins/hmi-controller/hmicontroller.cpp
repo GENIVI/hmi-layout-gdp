@@ -107,7 +107,7 @@ void HMIController::setApplicationArea(const QRect &applicationArea)
 void HMIController::openApp(const QString &unitName)
 {
     // Only raise services we know about
-    if (!unitExists(unitName)) {
+    if (!m_appManager.unitExists(unitName)) {
         return;
     }
 
@@ -137,16 +137,4 @@ void HMIController::openHomeScreen()
 void HMIController::stackLauncherOnTop(bool onTop)
 {
     m_layerController.stackLauncherOnTop(onTop);
-}
-
-bool HMIController::unitExists(const QString &unit)
-{
-    std::list<AppManager::AppInfo> applicationList = m_appManager.applicationList();
-    auto it = applicationList.begin();
-    for(; it != applicationList.end(); ++it) {
-        if (it->unit == unit.toStdString())
-            return true;
-    }
-
-    return false;
 }

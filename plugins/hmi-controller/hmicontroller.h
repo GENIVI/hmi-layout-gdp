@@ -56,9 +56,6 @@ signals:
     void applicationAreaChanged();
     void currentAppIdChanged();
 
-protected:
-    bool unitExists(const QString & unit);
-
 private:
     LifeCycleConsumer m_lifecycleconsumer;
     AppManager  m_appManager;

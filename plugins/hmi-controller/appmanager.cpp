@@ -52,3 +52,14 @@ bool AppManager::isAppInfoComplete(const AppManager::AppInfo &appInfo) const
 {
     return (appInfo.name.size() > 0 && appInfo.unit.size() > 0 && appInfo.exec.size() > 0);
 }
+
+bool AppManager::unitExists(const QString &unit)
+{
+    auto it = m_applicationList.begin();
+    for(; it != m_applicationList.end(); ++it) {
+        if (it->unit == unit.toStdString())
+            return true;
+    }
+
+    return false;
+}
