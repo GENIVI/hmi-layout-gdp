@@ -42,7 +42,7 @@ public:
     QString currentAppId() const;
 
     Q_INVOKABLE void setApplicationArea(const QRect& applicationArea);
-    Q_INVOKABLE void openApp(const QString& unitName);
+    Q_INVOKABLE void openApp(const QString& appID);
     Q_INVOKABLE void openHomeScreen();
 
     Q_INVOKABLE void stackLauncherOnTop(bool onTop);

@@ -35,7 +35,7 @@ void AppManager::loadApplications()
         AppInfo appInfo;
         appInfo.name = desktopfile.value("Name").toString();
         appInfo.icon = desktopfile.value("Icon").toString();
-        appInfo.unit = fileInfo.absoluteFilePath();
+        appInfo.appID = fileInfo.absoluteFilePath();
         appInfo.exec = desktopfile.value("Exec").toString();
         desktopfile.endGroup();
 
@@ -50,19 +50,19 @@ void AppManager::loadApplications()
 
 bool AppManager::isAppInfoComplete(const AppManager::AppInfo &appInfo) const
 {
-    return (appInfo.name.size() > 0 && appInfo.unit.size() > 0 && appInfo.exec.size() > 0);
+    return (appInfo.name.size() > 0 && appInfo.appID.size() > 0 && appInfo.exec.size() > 0);
 }
 
-bool AppManager::unitExists(const QString &unit) const
+bool AppManager::appExists(const QString &appID) const
 {
-    return isAppInfoComplete(appInfoFromUnit(unit));
+    return isAppInfoComplete(appInfoFromAppID(appID));
 }
 
-AppManager::AppInfo AppManager::appInfoFromUnit(const QString &unit) const
+AppManager::AppInfo AppManager::appInfoFromAppID(const QString &appID) const
 {
     auto it = m_applicationList.begin();
     for (; it != m_applicationList.end(); ++it) {
-        if (it->unit == unit)
+        if (it->appID == appID)
             return *it;
     }
 

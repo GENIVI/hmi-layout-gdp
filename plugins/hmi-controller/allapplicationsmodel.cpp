@@ -27,7 +27,7 @@ QVariant AllApplicationsModel::data(const QModelIndex &index, int role) const
     std::advance(it, index.row());
 
     switch (role) {
-        case AppIdRole:   return it->unit;
+        case AppIdRole:   return it->appID;
         case AppNameRole: return it->name;
         case AppIconRole: return it->icon;
         default: return QVariant();

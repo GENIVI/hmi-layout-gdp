@@ -12,15 +12,15 @@ public:
     struct AppInfo {
         QString name;
         QString icon;
-        QString unit;
+        QString appID;
         QString exec;
     };
 
     AppManager();
 
     std::list<AppInfo> applicationList();
-    bool unitExists(const QString &unit) const;
-    AppManager::AppInfo appInfoFromUnit(const QString &unit) const;
+    bool appExists(const QString &appID) const;
+    AppManager::AppInfo appInfoFromAppID(const QString &appID) const;
     AppManager::AppInfo appInfoFromExec(const QString &exec) const;
 
 protected:
