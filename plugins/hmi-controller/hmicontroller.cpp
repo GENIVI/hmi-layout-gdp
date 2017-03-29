@@ -17,10 +17,10 @@ HMIController::HMIController(QObject *parent) :
     m_layerController.setLauncherPid(getpid());
     m_layerController.setBackgroundSurfaceId(0); //TODO test more
 
-    connect(&m_layerController, &LayerController::currentUnitChanged,
+    connect(&m_layerController, &LayerController::currentAppIDChanged,
             this, &HMIController::appIsDisplayedChanged);
 
-    connect(&m_layerController, &LayerController::currentUnitChanged,
+    connect(&m_layerController, &LayerController::currentAppIDChanged,
             this, &HMIController::currentAppIdChanged);
 
     // Make sure that the Last User Context is called when the HMI
@@ -88,12 +88,12 @@ ApplicationsModelBase* HMIController::homeApplicationsModel()
 
 bool HMIController::appIsDisplayed() const
 {
-    return m_layerController.currentUnit().size() > 0;
+    return m_layerController.currentAppID().size() > 0;
 }
 
 QString HMIController::currentAppId() const
 {
-    return QString::fromStdString(m_layerController.currentUnit());
+    return QString::fromStdString(m_layerController.currentAppID());
 }
 
 void HMIController::setApplicationArea(const QRect &applicationArea)
@@ -104,15 +104,15 @@ void HMIController::setApplicationArea(const QRect &applicationArea)
                                  applicationArea.height());
 }
 
-void HMIController::openApp(const QString &unitName)
+void HMIController::openApp(const QString &appID)
 {
     // Only raise services we know about
-    if (!m_appManager.unitExists(unitName)) {
+    if (!m_appManager.appExists(appID)) {
         return;
     }
 
-    if (false == m_layerController.raiseUnit(unitName.toStdString())) {
-        AppManager::AppInfo app = m_appManager.appInfoFromUnit(unitName);
+    if (false == m_layerController.raiseApp(appID.toStdString())) {
+        AppManager::AppInfo app = m_appManager.appInfoFromAppID(appID);
 
         QProcess *process = new QProcess();
         process->start(app.exec);
@@ -125,12 +125,12 @@ void HMIController::openApp(const QString &unitName)
         m_layerController.addAppProcess(app, process->processId());
     }
 
-    setLUC(unitName);
+    setLUC(appID);
 }
 
 void HMIController::openHomeScreen()
 {
-    m_layerController.raiseUnit("");
+    m_layerController.raiseApp("");
 
     // Since setting "" as LUC does not make much sense
     // just delete the LUC file if it exists.

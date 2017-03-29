@@ -22,11 +22,11 @@ int HomeApplicationsModel::rowCount(const QModelIndex &parent) const
 
 QVariant HomeApplicationsModel::data(const QModelIndex &index, int role) const
 {
-    QString unit = m_homeApplicationIds[index.row()];
-    AppManager::AppInfo info = m_appManager.appInfoFromUnit(unit);
+    QString appID = m_homeApplicationIds[index.row()];
+    AppManager::AppInfo info = m_appManager.appInfoFromAppID(appID);
 
     switch (role) {
-        case AppIdRole:   return info.unit;
+        case AppIdRole:   return info.appID;
         case AppNameRole: return info.name;
         case AppIconRole: return info.icon;
         default: return QVariant();

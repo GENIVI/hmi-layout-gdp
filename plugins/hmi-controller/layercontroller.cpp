@@ -108,23 +108,23 @@ LayerController::~LayerController()
     SELF = nullptr;
 }
 
-std::string LayerController::currentUnit() const
+std::string LayerController::currentAppID() const
 {
-    return m_currentUnit;
+    return m_currentAppID;
 }
 
-bool LayerController::raiseUnit(const std::string& unitName)
+bool LayerController::raiseApp(const std::string& appID)
 {
-    setCurrentUnit(unitName);
+    setCurrentAppID(appID);
 
-    if (unitName.size() == 0) {
+    if (appID.size() == 0) {
         raiseLayer(m_launcherPid);
         return true;
     }
 
     std::list<ProcessInfo>::iterator it = m_processList.begin();
     for (; it != m_processList.end(); ++it) {
-        if (it->unitName == unitName) {
+        if (it->appID == appID) {
             unsigned int layerId = it->processId;
             raiseLayer(layerId);
             return true;
@@ -177,11 +177,11 @@ void LayerController::stackLauncherOnTop(bool onTop)
     ilm_commitChanges();
 }
 
-void LayerController::setCurrentUnit(const std::string &unit)
+void LayerController::setCurrentAppID(const std::string &appID)
 {
-    if (m_currentUnit != unit) {
-        m_currentUnit = unit;
-        emit currentUnitChanged(m_currentUnit);
+    if (m_currentAppID != appID) {
+        m_currentAppID = appID;
+        emit currentAppIDChanged(m_currentAppID);
     }
 }
 
@@ -445,7 +445,7 @@ void LayerController::addSurface(unsigned int surfaceId)
     ProcessInfo* processInfo = processInfoFromPid(props.creatorPid);
     if(processInfo == 0) { // If the info isn't in the list add it
         ProcessInfo newInfo;
-        newInfo.unitName = unitFromPid(props.creatorPid).toStdString();
+        newInfo.appID = appIDFromPid(props.creatorPid).toStdString();
         newInfo.processId = props.creatorPid;
         m_processList.push_back(newInfo);
         processInfo = processInfoFromPid(props.creatorPid);
@@ -471,15 +471,15 @@ void LayerController::addSurface(unsigned int surfaceId)
     setLayerVisible(layerId);
 
     // Raise this surface if it's meant to be current
-    if (processInfo->unitName == m_currentUnit) {
+    if (processInfo->appID == m_currentAppID) {
         raiseLayer(layerId); //TODO check the apps launched from home stack correctly for input
     }
 
     // TODO Not for production systems. Add compile time flag to some secure runtime option
     // Development helper. Raise any app without a service name.
-    if(processInfo->unitName.size() == 0 && layerId != m_launcherPid) {
-        processInfo->unitName = "____developer___";
-        setCurrentUnit(processInfo->unitName);
+    if(processInfo->appID.size() == 0 && layerId != m_launcherPid) {
+        processInfo->appID = "____developer___";
+        setCurrentAppID(processInfo->appID);
         m_currentLayer = layerId;
         stackLauncherOnTop(false);
     }
@@ -493,8 +493,8 @@ void LayerController::removeSurface(unsigned int surfaceId)
 
     if(processInfo->surfaceList.size() == 1) { //Last surface for this process
         // If the current application is closing. Go back to the launcher
-        if (m_currentUnit == processInfo->unitName) {
-            setCurrentUnit(std::string());
+        if (m_currentAppID == processInfo->appID) {
+            setCurrentAppID(std::string());
             raiseLayer(m_launcherPid);
         }
 
@@ -556,7 +556,7 @@ LayerController::ProcessInfo* LayerController::processInfoFromPid(unsigned int p
             return &(*it);
     }
 
-    return 0;
+    return nullptr;
 }
 
 LayerController::ProcessInfo* LayerController::processInfoFromSurfaceId(unsigned int surfaceId)
@@ -567,10 +567,10 @@ LayerController::ProcessInfo* LayerController::processInfoFromSurfaceId(unsigned
             return &(*it);
     }
 
-    return 0;
+    return nullptr;
 }
 
-QString LayerController::unitFromPid(unsigned int pid)
+QString LayerController::appIDFromPid(unsigned int pid)
 {
     std::string pidStr = std::to_string(pid);
     std::string pidExePath = std::string("/proc/") + pidStr + "/exe";
@@ -580,7 +580,7 @@ QString LayerController::unitFromPid(unsigned int pid)
     if (linkSz > 0) {
         resolvedLink[linkSz] = '\0';
         std::string execName(resolvedLink);
-        return m_appManager.appInfoFromExec(QString::fromStdString(execName)).unit;
+        return m_appManager.appInfoFromExec(QString::fromStdString(execName)).appID;
     }
 
     return QString();
@@ -590,7 +590,7 @@ void LayerController::addAppProcess(const AppManager::AppInfo app, const unsigne
 {
     ProcessInfo pinfo;
     pinfo.processId = pid;
-    pinfo.unitName = app.unit.toStdString();
+    pinfo.appID = app.appID.toStdString();
     pinfo.surfaceList = {};
 
     // Create layer for new app
