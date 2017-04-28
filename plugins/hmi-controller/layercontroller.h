@@ -7,6 +7,7 @@
 
 #include <QObject>
 #include <appmanager.h>
+#include <QMap>
 
 //TODO Move AppManager and Layer Controller to HMI Controller DBUS service
 
@@ -28,7 +29,7 @@ public:
     void setAppArea(int x, int y, int width, int height);
 
     void stackLauncherOnTop(bool onTop);
-    void addAppProcess(const AppManager::AppInfo app, const unsigned int pid);
+    void addAppProcess(const AppManager::AppInfo app, const pid_t pid);
 
 signals: // These may map to DBUS in the future
     void applicationReady(const std::string& appID);
@@ -77,20 +78,21 @@ private:
         bool operator == (const ProcessInfo& other) { return processId == other.processId; } //PID is unique enough
 
         std::string appID;
-        unsigned int processId;
+        pid_t processId;
+        pid_t graphicProcessId;
         std::vector<unsigned int> surfaceList;
     };
 
-    ProcessInfo* processInfoFromPid(unsigned int pid);
-    ProcessInfo* processInfoFromSurfaceId(unsigned int surfaceId);
+    ProcessInfo* processInfoFromPid(pid_t pid);
+    ProcessInfo* processInfoFromSurfaceId(pid_t surfaceId);
 
     // TODO only necessary because systemd reports the user unit
     // for user slice services rather than the actual service path
-    QString appIDFromPid(unsigned int pid);
+    std::string appIDFromPid(pid_t pid);
 
 private:
     AppManager& m_appManager;
-    std::list<ProcessInfo> m_processList;
+    QMap<pid_t, ProcessInfo> m_processList;
 
     unsigned int m_screenId;
     int m_screenWidth;

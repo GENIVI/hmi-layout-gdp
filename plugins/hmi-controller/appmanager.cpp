@@ -50,7 +50,19 @@ void AppManager::loadApplications()
 
 bool AppManager::isAppInfoComplete(const AppManager::AppInfo &appInfo) const
 {
-    return (appInfo.name.size() > 0 && appInfo.appID.size() > 0 && appInfo.exec.size() > 0);
+    if (appInfo.appID.isEmpty()) {
+        return false;
+    }
+
+    if (appInfo.name.isEmpty()) {
+        return false;
+    }
+
+    if (appInfo.exec.isEmpty()) {
+        return false;
+    }
+
+    return true;
 }
 
 bool AppManager::appExists(const QString &appID) const

@@ -17,6 +17,9 @@
 
 #include <QProcess>
 
+#include <QTextStream>
+#include <qfile.h>
+
 static const int DEFAULT_SCREEN_WIDTH = 1024;
 static const int DEFAULT_SCREEN_HEIGHT = 768;
 
@@ -89,16 +92,15 @@ LayerController::~LayerController()
 {
     ilm_unregisterNotification();
 
-    std::list<ProcessInfo>::iterator it = m_processList.begin();
-    for (; it != m_processList.end(); ++it) {
-        ilm_layerRemove(it->processId);
+    foreach (ProcessInfo pinfo, m_processList) {
+        ilm_layerRemove(pinfo.processId);
 
         QString killcmd("kill %1");
-        int retKill = QProcess::execute(killcmd.arg(QString::number(it->processId)));
+        int retKill = QProcess::execute(killcmd.arg(QString::number(pinfo.processId)));
 
         if (retKill != 0) {
             killcmd = QString("kill -9 %1");
-            QProcess::execute(killcmd.arg(QString::number(it->processId)));
+            QProcess::execute(killcmd.arg(QString::number(pinfo.processId)));
         }
     }
     ilm_layerRemove(m_backgroundSurfaceId);
@@ -122,10 +124,9 @@ bool LayerController::raiseApp(const std::string& appID)
         return true;
     }
 
-    std::list<ProcessInfo>::iterator it = m_processList.begin();
-    for (; it != m_processList.end(); ++it) {
-        if (it->appID == appID) {
-            unsigned int layerId = it->processId;
+    foreach (ProcessInfo pinfo, m_processList) {
+        if (pinfo.appID == appID) {
+            unsigned int layerId = pinfo.processId;
             raiseLayer(layerId);
             return true;
         }
@@ -227,6 +228,7 @@ bool LayerController::initIlm()
 
 bool LayerController::cleanupIlm()
 {
+    // initializes the IVI LayerManagement Client
     // destroy the IVI LayerManagement Client
     ilmErrorTypes callResult = ilm_destroy();
     if (ILM_SUCCESS != callResult) {
@@ -285,10 +287,9 @@ bool LayerController::initScreen()
 
 void LayerController::resizeAppSurfaces()
 {
-    std::list<ProcessInfo>::iterator it =  m_processList.begin();
-    for (; it != m_processList.end(); ++it) {
-        std::vector<unsigned int>::iterator surfaceIt = it->surfaceList.begin();
-        for (; surfaceIt != it->surfaceList.end(); ++surfaceIt)
+    foreach (ProcessInfo pinfo, m_processList) {
+        std::vector<unsigned int>::iterator surfaceIt = pinfo.surfaceList.begin();
+        for (; surfaceIt != pinfo.surfaceList.end(); ++surfaceIt)
             resizeAppSurface(*surfaceIt);
     }
 }
@@ -437,26 +438,28 @@ void LayerController::addSurface(unsigned int surfaceId)
 
     struct ilmSurfaceProperties props;
     ilm_getPropertiesOfSurface(surfaceId, &props);
-    unsigned int layerId = props.creatorPid;
 
     setSurfaceVisible(surfaceId);
 
     //Get ProcessInfo
     ProcessInfo* processInfo = processInfoFromPid(props.creatorPid);
-    if(processInfo == 0) { // If the info isn't in the list add it
+    if(processInfo == nullptr) { // If the info isn't in the list add it
         ProcessInfo newInfo;
-        newInfo.appID = appIDFromPid(props.creatorPid).toStdString();
+        newInfo.appID = appIDFromPid(props.creatorPid);
         newInfo.processId = props.creatorPid;
-        m_processList.push_back(newInfo);
+        newInfo.graphicProcessId = props.creatorPid;
+        m_processList[newInfo.processId] = newInfo;
         processInfo = processInfoFromPid(props.creatorPid);
 
         // Create layer for new app
         unsigned int layerId = newInfo.processId;
         createLayer(layerId);
     }
+    processInfo->graphicProcessId = props.creatorPid;
+    unsigned int layerId = processInfo->processId;
 
     // Resize layer. Qt surfaces will need to resize again via surface callback
-    if (static_cast<unsigned int>(props.creatorPid) != m_launcherPid)
+    if (static_cast<unsigned int>(processInfo->processId) != m_launcherPid)
         resizeAppSurface(surfaceId);
     else
         resizeFullScreenSurface(surfaceId);
@@ -488,7 +491,6 @@ void LayerController::addSurface(unsigned int surfaceId)
 void LayerController::removeSurface(unsigned int surfaceId)
 {
     //TODO add error checking
-
     ProcessInfo* processInfo = processInfoFromSurfaceId(surfaceId);
 
     if(processInfo->surfaceList.size() == 1) { //Last surface for this process
@@ -498,8 +500,8 @@ void LayerController::removeSurface(unsigned int surfaceId)
             raiseLayer(m_launcherPid);
         }
 
-        destroyLayer(processInfo->processId);
-        m_processList.remove(*processInfo);
+        destroyLayer(processInfo->graphicProcessId);
+        m_processList.remove(processInfo->processId);
     }
     else { // This process still has surfaces.
         processInfo->surfaceList.erase(std::find(processInfo->surfaceList.begin(), processInfo->surfaceList.end(), surfaceId));
@@ -548,53 +550,81 @@ void LayerController::surfaceConfiguredCallback_onGuiThread(unsigned int surface
     }
 }
 
-LayerController::ProcessInfo* LayerController::processInfoFromPid(unsigned int pid)
+LayerController::ProcessInfo* LayerController::processInfoFromPid(pid_t pid)
 {
-    std::list<ProcessInfo>::iterator it = m_processList.begin();
-    for (; it != m_processList.end(); ++it) {
-        if (it->processId == pid)
-            return &(*it);
+    // Pid 0 can not be an application.
+    if (0 == pid) {
+        return nullptr;
+    }
+
+    // If there is an application associated with the given pid
+    // return that appID
+    if (m_processList.contains(pid)) {
+        return &m_processList[pid];
+    }
+
+    // No application found for the given pid.
+    // Check PPid (parent pid) found int /proc/<pid>/status.
+    QFile pidStatusFile("/proc/" + QString::number(pid) + "/status");
+    if (!pidStatusFile.exists() || !pidStatusFile.open(QFile::ReadOnly)) {
+        return nullptr;
+    }
+
+    QTextStream stream(&pidStatusFile);
+    QString line = "";
+    bool found = false;
+    while (!(line = stream.readLine()).isNull()) {
+        if (line.startsWith("PPid:")) {
+            found = true;
+            break;
+        }
+    }
+    pidStatusFile.close();
+
+    if (!found) {
+        qWarning("Failed to parse parent pid due to missing status file for process");
+        return nullptr;
+    }
+
+    line.replace("PPid:", "");
+    line.replace("\t", "");
+    line.replace(" ", "");
+    pid_t ppid = line.toInt();
+
+    return processInfoFromPid(ppid);
+}
+
+LayerController::ProcessInfo* LayerController::processInfoFromSurfaceId(pid_t surfaceId)
+{
+    foreach (ProcessInfo pinfo, m_processList) {
+        if (std::find(pinfo.surfaceList.begin(), pinfo.surfaceList.end(), surfaceId) != pinfo.surfaceList.end()) {
+            return &m_processList[pinfo.processId];
+        }
     }
 
     return nullptr;
 }
 
-LayerController::ProcessInfo* LayerController::processInfoFromSurfaceId(unsigned int surfaceId)
+std::string LayerController::appIDFromPid(pid_t pid)
 {
-    std::list<ProcessInfo>::iterator it = m_processList.begin();
-    for (; it != m_processList.end(); ++it) {
-        if (std::find(it->surfaceList.begin(), it->surfaceList.end(), surfaceId) != it->surfaceList.end())
-            return &(*it);
+    ProcessInfo* pinfo = processInfoFromPid(pid);
+    if (pinfo == nullptr) {
+        return "";
     }
 
-    return nullptr;
+    return pinfo->appID;
 }
 
-QString LayerController::appIDFromPid(unsigned int pid)
-{
-    std::string pidStr = std::to_string(pid);
-    std::string pidExePath = std::string("/proc/") + pidStr + "/exe";
-
-    char resolvedLink[255];
-    int linkSz = readlink(pidExePath.c_str(), resolvedLink, 255);
-    if (linkSz > 0) {
-        resolvedLink[linkSz] = '\0';
-        std::string execName(resolvedLink);
-        return m_appManager.appInfoFromExec(QString::fromStdString(execName)).appID;
-    }
-
-    return QString();
-}
-
-void LayerController::addAppProcess(const AppManager::AppInfo app, const unsigned int pid)
+void LayerController::addAppProcess(const AppManager::AppInfo app, const pid_t pid)
 {
     ProcessInfo pinfo;
     pinfo.processId = pid;
+    pinfo.graphicProcessId = pid;
     pinfo.appID = app.appID.toStdString();
     pinfo.surfaceList = {};
 
     // Create layer for new app
     createLayer(pid);
 
-    m_processList.push_back(pinfo);
+    m_processList[pid]= pinfo;
 }
