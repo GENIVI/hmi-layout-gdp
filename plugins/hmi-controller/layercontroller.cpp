@@ -92,7 +92,7 @@ LayerController::~LayerController()
 {
     ilm_unregisterNotification();
 
-    foreach (ProcessInfo pinfo, m_processList) {
+    foreach (ProcessInfo pinfo, m_processMap) {
         ilm_layerRemove(pinfo.processId);
 
         QString killcmd("kill %1");
@@ -124,7 +124,7 @@ bool LayerController::raiseApp(const std::string& appID)
         return true;
     }
 
-    foreach (ProcessInfo pinfo, m_processList) {
+    foreach (ProcessInfo pinfo, m_processMap) {
         if (pinfo.appID == appID) {
             unsigned int layerId = pinfo.processId;
             raiseLayer(layerId);
@@ -287,7 +287,7 @@ bool LayerController::initScreen()
 
 void LayerController::resizeAppSurfaces()
 {
-    foreach (ProcessInfo pinfo, m_processList) {
+    foreach (ProcessInfo pinfo, m_processMap) {
         std::vector<unsigned int>::iterator surfaceIt = pinfo.surfaceList.begin();
         for (; surfaceIt != pinfo.surfaceList.end(); ++surfaceIt)
             resizeAppSurface(*surfaceIt);
@@ -448,7 +448,7 @@ void LayerController::addSurface(unsigned int surfaceId)
         newInfo.appID = appIDFromPid(props.creatorPid);
         newInfo.processId = props.creatorPid;
         newInfo.graphicProcessId = props.creatorPid;
-        m_processList[newInfo.processId] = newInfo;
+        m_processMap[newInfo.processId] = newInfo;
         processInfo = processInfoFromPid(props.creatorPid);
 
         // Create layer for new app
@@ -501,7 +501,7 @@ void LayerController::removeSurface(unsigned int surfaceId)
         }
 
         destroyLayer(processInfo->graphicProcessId);
-        m_processList.remove(processInfo->processId);
+        m_processMap.remove(processInfo->processId);
     }
     else { // This process still has surfaces.
         processInfo->surfaceList.erase(std::find(processInfo->surfaceList.begin(), processInfo->surfaceList.end(), surfaceId));
@@ -559,8 +559,8 @@ LayerController::ProcessInfo* LayerController::processInfoFromPid(pid_t pid)
 
     // If there is an application associated with the given pid
     // return that appID
-    if (m_processList.contains(pid)) {
-        return &m_processList[pid];
+    if (m_processMap.contains(pid)) {
+        return &m_processMap[pid];
     }
 
     // No application found for the given pid.
@@ -596,9 +596,9 @@ LayerController::ProcessInfo* LayerController::processInfoFromPid(pid_t pid)
 
 LayerController::ProcessInfo* LayerController::processInfoFromSurfaceId(pid_t surfaceId)
 {
-    foreach (ProcessInfo pinfo, m_processList) {
+    foreach (ProcessInfo pinfo, m_processMap) {
         if (std::find(pinfo.surfaceList.begin(), pinfo.surfaceList.end(), surfaceId) != pinfo.surfaceList.end()) {
-            return &m_processList[pinfo.processId];
+            return &m_processMap[pinfo.processId];
         }
     }
 
@@ -626,5 +626,5 @@ void LayerController::addAppProcess(const AppManager::AppInfo app, const pid_t p
     // Create layer for new app
     createLayer(pid);
 
-    m_processList[pid]= pinfo;
+    m_processMap[pid]= pinfo;
 }

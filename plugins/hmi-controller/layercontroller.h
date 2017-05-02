@@ -92,7 +92,7 @@ private:
 
 private:
     AppManager& m_appManager;
-    QMap<pid_t, ProcessInfo> m_processList;
+    QMap<pid_t, ProcessInfo> m_processMap;
 
     unsigned int m_screenId;
     int m_screenWidth;
