@@ -1,7 +1,9 @@
 #include <malloc.h>
 #include <unistd.h>
 
-#include <systemd/sd-journal.h>
+#include <ivi-logging/ivi-logging.h>
+
+typedef logging::DefaultLogContext LogContext;
 
 #include <ilm/ilm_types.h>
 #include <ilm/ilm_client.h>
@@ -25,6 +27,10 @@ static const int DEFAULT_SCREEN_HEIGHT = 768;
 
 static LayerController* SELF = nullptr;
 
+LOG_DEFINE_APP_IDS("HMCO", "HMI Controller");
+LOG_DECLARE_DEFAULT_CONTEXT(mainContext, "LACO", "LayerController context");
+
+
 //TODO Move these to another class to keep LayerController cleaner (free of QObject)
 static void surfaceCallbackFunction(t_ilm_uint id, struct ilmSurfaceProperties* sp, t_ilm_notification_mask m)
 {
@@ -43,8 +49,7 @@ static void surfaceCallback_onIlmThread(ilmObjectType object,
                                         void *)
 {
     if(SELF == nullptr) {
-        sd_journal_print(LOG_ERR,
-            "Error: No instance of Layer Controller detected");
+	log_error() << "Error: No instance of Layer Controller detected";
     }
 
     if (object == ilmObjectType::ILM_SURFACE) {
@@ -74,8 +79,7 @@ LayerController::LayerController(AppManager &appManager) :
     m_launcherOnTop(true)
 {
     if(SELF != nullptr) {
-        sd_journal_print(LOG_ERR,
-            "Error: Second instance of Layer Controller detected");
+            log_error() << "Error: Second instance of Layer Controller detected";
     }
 
     SELF = this;
@@ -218,9 +222,7 @@ bool LayerController::initIlm()
     // initializes the IVI LayerManagement Client
     ilmErrorTypes callResult = ilm_init();
     if (ILM_SUCCESS != callResult) {
-        sd_journal_print(LOG_ERR,
-            "Error: ilm_init - %s.\n",
-            ILM_ERROR_STRING(callResult));
+	log_error() << "Error: ilm_init - " << ILM_ERROR_STRING(callResult);
     }
 
     return (ILM_SUCCESS == callResult);
@@ -232,9 +234,7 @@ bool LayerController::cleanupIlm()
     // destroy the IVI LayerManagement Client
     ilmErrorTypes callResult = ilm_destroy();
     if (ILM_SUCCESS != callResult) {
-        sd_journal_print(LOG_ERR,
-            "Error: ilm_destroy - %s.\n",
-            ILM_ERROR_STRING(callResult));
+	log_error() << "Error: ilm_destroy - " << ILM_ERROR_STRING(callResult);
     }
 
     return true;
@@ -250,18 +250,14 @@ bool LayerController::initScreen()
 
     callResult = ilm_getScreenIDs(&numberOfScreens, &screenIds);
     if (ILM_SUCCESS != callResult) {
-        sd_journal_print(LOG_ERR,
-            "Error: initScreen() ilm_getScreenIDs - %s.\n",
-            ILM_ERROR_STRING(callResult));
+        log_error() << "Error: initScreen() ilm_getScreenIDs - " <<  ILM_ERROR_STRING(callResult);
         return false;
     }
     else {
-        sd_journal_print(LOG_DEBUG,
-            "Debug: ilm_getScreenIDs - %s. number of screens = %u\n",
-            ILM_ERROR_STRING(callResult), numberOfScreens);
+        log_debug() << "Debug: ilm_getScreenIDs - " << ILM_ERROR_STRING(callResult)
+                    << ". number of screens = " << numberOfScreens;
         for (uint i = 0; i < numberOfScreens; i++) {
-            sd_journal_print(LOG_DEBUG, "Debug: Screen ID[%u] = %d\n",
-                i, screenIds[i]);
+            log_debug() << "Debug: Screen ID[" << i << "] = " << screenIds[i];
         }
         m_screenId = 0;   // FIXME: always use screen with the ID 0
                          // (limitation of ivi-shell at time of this writing)
@@ -269,18 +265,17 @@ bool LayerController::initScreen()
 
     callResult = ilm_getPropertiesOfScreen(m_screenId, &screenProperties);
     if (ILM_SUCCESS != callResult) {
-        sd_journal_print(LOG_ERR,
-            "Error: initScreen() ilm_getPropertiesOfScreen - %s. Exiting.\n",
-            ILM_ERROR_STRING(callResult));
+        log_error() << "Error: initScreen() ilm_getPropertiesOfScreen - "
+                    << ILM_ERROR_STRING(callResult)
+                    << ". Exiting.\n";
         return false;
     }
 
     m_screenWidth  = screenProperties.screenWidth;
     m_screenHeight = screenProperties.screenHeight;
 
-    sd_journal_print(LOG_INFO,
-        "Info: initScreen() - screen size = %u x %u\n",
-        m_screenWidth, m_screenHeight);
+    log_info() << "Info: initScreen() - screen size = "
+               << m_screenWidth << " x " << m_screenHeight;
 
     return true;
 }
@@ -302,17 +297,17 @@ bool LayerController::resizeFullScreenSurface(unsigned int surfaceId)
 
     callResult = ilm_surfaceSetSourceRectangle(surfaceId, 0, 0, props.origSourceWidth, props.origSourceHeight);
     if (ILM_SUCCESS != callResult) {
-        sd_journal_print(LOG_ERR,
-            "Error: resizeFullScreenSurface ilm_surfaceSetSourceRectangle - %s. Exiting.\n",
-            ILM_ERROR_STRING(callResult));
+        log_error() << "Error: resizeFullScreenSurface ilm_surfaceSetSourceRectangle - "
+                    << ILM_ERROR_STRING(callResult)
+                    << ". Exiting.\n";
         return false;
     }
 
     callResult = ilm_surfaceSetDestinationRectangle(surfaceId, 0, 0, m_screenWidth, m_screenHeight);
     if (ILM_SUCCESS != callResult) {
-        sd_journal_print(LOG_ERR,
-            "Error: resizeFullScreenSurface ilm_surfaceSetDestinationRectangle - %s. Exiting.\n",
-            ILM_ERROR_STRING(callResult));
+        log_error() << "Error: resizeFullScreenSurface ilm_surfaceSetDestinationRectangle - "
+                    << ILM_ERROR_STRING(callResult)
+                    << ". Exiting.\n";
         return false;
     }
 
@@ -331,17 +326,15 @@ bool LayerController::resizeAppSurface(unsigned int surfaceId)
     {
         callResult = ilm_surfaceSetSourceRectangle(surfaceId, 0, 0, props.origSourceWidth, props.origSourceHeight);
         if (ILM_SUCCESS != callResult) {
-            sd_journal_print(LOG_ERR,
-                "Error: resizeAppSurface ilm_surfaceSetSourceRectangle - %s.\n",
-                ILM_ERROR_STRING(callResult));
+            log_error() << "Error: resizeAppSurface ilm_surfaceSetSourceRectangle - "
+                        << ILM_ERROR_STRING(callResult);
             return false;
         }
 
         callResult = ilm_surfaceSetDestinationRectangle(surfaceId, m_appX, m_appY, m_appWidth, m_appHeight);
         if (ILM_SUCCESS != callResult) {
-            sd_journal_print(LOG_ERR,
-                "Error: resizeAppSurface ilm_surfaceSetDestinationRectangle - %s.\n",
-                ILM_ERROR_STRING(callResult));
+            log_error() << "Error: resizeAppSurface ilm_surfaceSetDestinationRectangle - "
+                        << ILM_ERROR_STRING(callResult);
             return false;
         }
 
@@ -372,14 +365,13 @@ bool LayerController::createLayer(unsigned int layerId)
     callResult = ilm_layerCreateWithDimension(&layerId, m_screenWidth, m_screenHeight);
 
     if (ILM_SUCCESS != callResult) {
-        sd_journal_print(LOG_ERR,
-            "Error: createLayer (id = %u) - %s\n",
-            layerId, ILM_ERROR_STRING(callResult));
+        log_error() << "Error: createLayer (id = " << layerId << ") - "
+                    << ILM_ERROR_STRING(callResult);
     } else {
-        sd_journal_print(LOG_DEBUG,
-            "Debug: createLayer (id = %u) - %s (%u x %u)\n",
-            layerId, ILM_ERROR_STRING(callResult),
-            m_screenWidth, m_screenHeight);
+        log_debug() << "Debug: createLayer (id = "
+                    << layerId << ") - "
+                    << ILM_ERROR_STRING(callResult)
+                    << " (" << m_screenWidth << " x " << m_screenHeight << ")";
     }
 
     return (callResult == ILM_SUCCESS);
@@ -390,9 +382,8 @@ bool LayerController::destroyLayer(unsigned int layerId)
     ilmErrorTypes callResult = ILM_FAILED;
     callResult = ilm_layerRemove(layerId);
     if (ILM_SUCCESS != callResult) {
-        sd_journal_print(LOG_ERR,
-            "Error: destroyLayer (id = %u) - %s\n",
-            layerId, ILM_ERROR_STRING(callResult));
+        log_error() << "Error: destroyLayer (id = " << layerId << ") - "
+            << ILM_ERROR_STRING(callResult);
         return false;
     }
 

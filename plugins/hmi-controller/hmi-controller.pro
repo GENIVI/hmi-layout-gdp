@@ -1,16 +1,14 @@
 TEMPLATE = lib
 TARGET = hmi-controller
 QT += qml quick dbus
-CONFIG += qt plugin c++11
+CONFIG += qt plugin c++11 link_pkgconfig
+PKGCONFIG += automotive-dlt ivi-logging
 
 TARGET = $$qtLibraryTarget($$TARGET)
 uri = com.genivi.hmicontroller
 
 # ILM libs
 LIBS += -lilmCommon -lilmClient -lilmControl -lilmInput
-
-#Systemd libs
-LIBS += -lsystemd
 
 # Input
 SOURCES += \
