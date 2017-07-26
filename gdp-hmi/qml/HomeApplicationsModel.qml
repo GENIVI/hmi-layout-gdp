@@ -27,7 +27,7 @@ ListModel {
     ListElement {
         appName: "Browser"
         appIcon: "qrc:/assets/Browser.svg"
-        appId: "/usr/share/applications/demoui.desktop"
+        appId: "/usr/share/applications/Browser.desktop"
     }
     ListElement {
         appName: "RVI"
