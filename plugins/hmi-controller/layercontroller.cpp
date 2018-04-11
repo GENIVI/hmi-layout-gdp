@@ -74,7 +74,12 @@ LayerController::LayerController(AppManager &appManager) :
     m_appWidth(0),
     m_appHeight(0),
     m_launcherPid(0),
-    m_backgroundSurfaceId(0),
+    // INVALID_ID can be passed to automatically generate layer ID, but
+    // this member is also redefined by the main program through a call to
+    // setBackgroundSurfaceId().  This might still need some cleanup. 
+    // Since any other number is valid, it should likely be initialized to
+    // INVALID_ID regardless.
+    m_backgroundSurfaceId(INVALID_ID), 
     m_currentLayer(0),
     m_launcherOnTop(true)
 {
@@ -359,7 +364,7 @@ void LayerController::setLayerVisible(unsigned int layerId)
     ilm_commitChanges();
 }
 
-bool LayerController::createLayer(unsigned int layerId)
+bool LayerController::createLayer(unsigned int &layerId)
 {
     ilmErrorTypes callResult = ILM_FAILED;
     callResult = ilm_layerCreateWithDimension(&layerId, m_screenWidth, m_screenHeight);
