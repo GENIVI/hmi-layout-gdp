@@ -60,7 +60,7 @@ protected:
     void setSurfaceVisible(unsigned int surfaceId);
     void setLayerVisible(unsigned int layerId);
 
-    bool createLayer(unsigned int layerId);
+    bool createLayer(unsigned int &layerId);
     bool destroyLayer(unsigned int layerId);
     void focusOnLayer(unsigned int layerId);
 
