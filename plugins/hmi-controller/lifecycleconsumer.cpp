@@ -16,6 +16,10 @@ LifeCycleConsumer::LifeCycleConsumer(QObject *parent) : QObject(parent),
 
 int LifeCycleConsumer::LifecycleRequest(uint Request, uint RequestId)
 {
+    // Unused (not using C++17 feature [[maybe_unused]] yet)
+    (void)(Request);
+    (void)(RequestId);
+
     return 0;
 }
 
