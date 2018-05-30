@@ -73,14 +73,15 @@ LayerController::LayerController(AppManager &appManager) :
     m_appY(0),
     m_appWidth(0),
     m_appHeight(0),
-    m_launcherPid(0),
-    // INVALID_ID can be passed to automatically generate layer ID, but
-    // this member is also redefined by the main program through a call to
-    // setBackgroundSurfaceId().  This might still need some cleanup. 
-    // Since any other number is valid, it should likely be initialized to
-    // INVALID_ID regardless.
-    m_backgroundSurfaceId(INVALID_ID), 
-    m_currentLayer(0),
+
+    // These values we expect to be modified before use, but avoiding 0 to
+    // see if this affects the bug of value zero being used inappropriately
+    // for layer / surface ID.  All of these are unexpected/impossible
+    // values once we are up and running.
+    m_launcherPid(1),
+    m_backgroundSurfaceId(2),
+    m_currentLayer(3),
+
     m_launcherOnTop(true)
 {
     if(SELF != nullptr) {
@@ -152,6 +153,7 @@ void LayerController::setLauncherPid(unsigned int pid)
 void LayerController::setBackgroundSurfaceId(unsigned int backgroundId)
 {
     m_backgroundSurfaceId = backgroundId;
+    createLayer(m_backgroundSurfaceId);
 }
 
 void LayerController::setAppArea(int x, int y, int width, int height)
@@ -506,6 +508,8 @@ void LayerController::removeSurface(unsigned int surfaceId)
 
 void LayerController::addBackgroundSurface(unsigned int surfaceId)
 {
+    // We don't seem to ever reach this function now -- needs more
+    // investigation
     createLayer(m_backgroundSurfaceId);
     resizeFullScreenSurface(surfaceId);
     setSurfaceVisible(surfaceId);

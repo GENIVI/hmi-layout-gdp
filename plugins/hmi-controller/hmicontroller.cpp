@@ -15,8 +15,7 @@ HMIController::HMIController(QObject *parent) :
     m_lucFile("lastUserContext")
 {
     m_layerController.setLauncherPid(getpid());
-    // NOTE: INVALID_ID will be changed by ILM to a auto-generated ID
-    m_layerController.setBackgroundSurfaceId(INVALID_ID);
+    m_layerController.setBackgroundSurfaceId(12345678); //TODO test more
 
     connect(&m_layerController, &LayerController::currentAppIDChanged,
             this, &HMIController::appIsDisplayedChanged);
